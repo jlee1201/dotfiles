@@ -1,0 +1,163 @@
+;; !  | means mandatory
+;; #  | means optional
+;; C  | left_command
+;; T  | left_control
+;; O  | left_option
+;; S  | left_shift
+;; F  | fn
+;; Q  | right_command
+;; W  | right_control
+;; E  | right_option
+;; R  | right_shift
+;; P  | caps_lock
+;; !! | mandatory command + control + optional + shift (hyper)
+;; ## | optional any
+
+{;
+  :default            true
+
+  :alone              500
+  :delay              200
+  :held               500
+  :sim                200
+  :simlayer-threshold 222
+  :modifiers          {;
+                        :super-hyper [:command :shift :control :option :fn]
+                        :hyper       [:command :shift :control :option]
+                        :cos         [:command :shift :option]
+                        :cst         [:command :shift :control]
+                        :co          [:command :option]
+                        :cs          [:command :shift]
+                        :ct          [:command :control]
+                        :to          [:control :option]
+                        :ts          [:control :shift]
+                        :os          [:option :shift]
+                        ;
+                        }
+  :froms              {;alias
+                        :delete {:key :delete_or_backspace}
+                        :return {:key :return_or_enter}
+                        :tilde  {:key :grave_accent_and_tilde}
+
+                        ;
+                        }
+  :layers             {;
+                        :caps_mode          {:key :caps_lock :alone {:key :escape}}
+                        :space_mode         {:key :spacebar :alone {:key :spacebar}}
+                        :right_option_mode  {:key :right_option :alone {:key :delete_forward}}
+                        :right_command_mode {:key :right_command :alone {:key :delete_or_backspace}}
+                        :left_shift_mode    {:key :left_shift :alone {:key :delete_or_backspace}}
+                        ;
+                        }
+  :simlayers          {;
+                        :movement_mode         {:key :f}
+                        :delete_mode           {:key :semicolon}
+                        :control_movement_mode {:key :s}
+                        :option_movement_mode  {:key :d}
+                        ;
+                        }
+  :main               [;
+                        {:des "movement_mode"
+                         :rules
+                         [;; start_rules
+                           :movement_mode
+
+                           [:##j :left_arrow]
+                           [:##i :up_arrow]
+                           [:##k :down_arrow]
+                           [:##l :right_arrow]
+                           [:##u :home]
+                           [:##o :end]
+                           [:##open_bracket :page_up]
+                           [:##quote :page_down]
+
+                           ;
+                           ]}
+                        ;
+                        {:des "control_movement_mode"
+                         :rules
+                         [;; start_rules
+                           :control_movement_mode
+
+                           [:##j :!Tleft_arrow]
+                           [:##i :!Tup_arrow]
+                           [:##k :!Tdown_arrow]
+                           [:##l :!Tright_arrow]
+                           [:##u :!Thome]
+                           [:##o :!Tend]
+                           [:##open_bracket :!Tpage_up]
+                           [:##quote :!Tpage_down]
+
+                           ;
+                           ]}
+
+                        {:des "option_movement_mode"
+                         :rules
+                         [;; start_rules
+                           :option_movement_mode
+
+                           [:##j :!Oleft_arrow]
+                           [:##i :!Oup_arrow]
+                           [:##k :!Odown_arrow]
+                           [:##l :!Oright_arrow]
+                           [:##u :!Ohome]
+                           [:##o :!Oend]
+                           [:##open_bracket :!Opage_up]
+                           [:##quote :!Opage_down]
+
+                           ;
+                           ]}
+                        ;
+                        {:des "delete_mode"
+                         :rules
+                         [;
+                           :delete_mode
+                           [:##a :delete_or_backspace]
+                           [:##left_shift :##left_shift nil {:alone :!Odelete_or_backspace}]
+                           [:##right_shift :##right_shift nil {:alone :##delete_forward}]
+                           ;
+                           ]}
+
+                        {:des "caps_mode"
+                         :rules
+                         [;
+                           :caps_mode
+                           [:##spacebar :delete_or_backspace]
+                           ;
+                           ]}
+
+
+                        {:des "trackpad"
+                         :rules
+                         [;
+                           :multitouch_extension_finger_count_total
+                           [:##j :button1]
+                           [:##r :button1]
+                           [:##l :button2]
+                           [:##w :button2]
+                           [:##e :button3]
+                           [:##k :button3]
+                           ;
+
+                           ]}
+
+                        {:des "trackpad 2-fingers"
+                         :rules
+                         [;
+                           [:condi ["multitouch_extension_finger_count_total" 2]]
+                           [:##d :left_option]
+                           [:##s :left_control]
+                           ;
+                           ]}
+
+                        {:des "modifier remapping"
+                         :rules
+                         [;
+                           [:##fn :!COleft_control]
+
+                           ;
+                           ]}
+                        ;
+                        ]
+  ;
+  }

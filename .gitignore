@@ -1,4 +1,14 @@
+# $HOME
 *
 !.gitconfig
 !.gitignore
+
 !.zshrc
+
+# .config/
+!.config/
+!.config/karabiner.edn
+
+#.ssh/
+!.ssh
+!.ssh/config
