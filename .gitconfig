@@ -1,0 +1,5 @@
+[user]
+	name = John Lee
+	email = jlee1201@users.noreply.github.com
+[core]
+	autocrlf = input
