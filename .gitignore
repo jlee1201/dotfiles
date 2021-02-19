@@ -1,5 +1,5 @@
 # $HOME
-*
+/*
 !.gitconfig
 !.gitignore
 
@@ -7,11 +7,15 @@
 
 # .config/
 !.config/
+.config/*
 !.config/karabiner.edn
 
 #.ssh/
 !.ssh
+.ssh/*
 !.ssh/config
 
-!.oh-my-zsh/
+!.oh-my-zsh/custom
+
+
 
