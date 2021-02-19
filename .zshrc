@@ -112,3 +112,8 @@ source $ZSH/oh-my-zsh.sh
 # NVM
 export NVM_DIR=~/.nvm
 source $(brew --prefix nvm)/nvm.sh
+
+# autoload zfunc
+for file in ~/.zfunc/*;
+    do autoload $file
+done
