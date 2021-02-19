@@ -15,7 +15,6 @@
 .ssh/*
 !.ssh/config
 
-!.oh-my-zsh/custom
-
+!.zfunc
 
 
