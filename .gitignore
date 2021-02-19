@@ -12,3 +12,6 @@
 #.ssh/
 !.ssh
 !.ssh/config
+
+!.oh-my-zsh/
+
