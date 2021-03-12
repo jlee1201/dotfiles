@@ -97,8 +97,8 @@
                    :rules
                    [;
 
-                     [:##right_shift :right_shift [:!movement_mode] {:alone :delete_or_backspace}]
-
+                     [:##right_shift :right_shift nil {:alone :delete_or_backspace}]
+                     [:##right_option :right_option nil {:alone :delete_forward }]
                      [:left_control :left_command [:!terminals]]
                      ;
                      ]}
@@ -107,75 +107,71 @@
                    :rules
                    [;
                      :movement_mode
-                     ; modifiers
-                     [:##f :left_command]
-                     [:##d :left_option]
-                     [:##s :left_control]
 
                      ; arrows
                      [:##j :left_arrow]
                      [:##i :up_arrow]
                      [:##k :down_arrow]
                      [:##l :right_arrow]
-                     [:##u :home]
-                     [:##o :end]
-                     [:##open_bracket :page_up]
-                     [:##quote :page_down]
+
+                     [:##p :page_up]
+                     [:##n :page_down]
+
+                     [:##semicolon :!Tright_arrow [:terminals]]
+                     [:##semicolon :!Oright_arrow [:!terminals]]
+                     [:##h :!Tleft_arrow [:terminals]]
+                     [:##h :!Oleft_arrow [:!terminals]]
+
+                     ; copy
+                     [:##c [:!Cc] [:!terminals]]
+                     [:##c [:!Tc] [:terminals]]
+
+                     ; cut
+                     [:##x [:!Cx] [:!terminals]]
+                     [:##x [:!Tx] [:terminals]]
+
+                     ; paste
+                     [:##v [:!Cv] [:!terminals :!multitouch_extension_finger_count_total]]
+                     [:##v [:!Tv] [:terminals :!multitouch_extension_finger_count_total]]
+
+                     ; undo
+                     [:##z [:!Cz] [:!terminals]]
+                     [:##z [:!Tz] [:terminals]]
+
+                     ; lookup ctrl-b
+                     [:##b [:!Tb] [:terminals :!multitouch_extension_finger_count_total]]
+
+                     ; ctrl-w
+                     [:##w [:!Tw] [:terminals :!multitouch_extension_finger_count_total]]
+                     [:##w [:!Cw] [:!terminals :!multitouch_extension_finger_count_total]]
+
+                      ; ctrl-t
+                     [:##t [:!Tw] [:terminals]]
+                     [:##t [:!Cw] [:!terminals]]
+
+                     ; mouse buttons
+                     [:##f :button1]
+                     [:##d :button3]
+                     [:##s :button2]
 
                      ; remapping
-                     [:##right_shift :right_shift nil {:alone :delete_forward}]
+                     [:##return_or_enter :end]
+                     [:##spacebar :home]
                      ;
                      ]}
                   ;
-                  {:des "control_movement_mode"
-                   :rules
-                   [;; start_rules
-                     :control_movement_mode
-
-                     [:##j :!Tleft_arrow]
-                     [:##i :!Tup_arrow]
-                     [:##k :!Tdown_arrow]
-                     [:##l :!Tright_arrow]
-                     [:##u :!Thome]
-                     [:##o :!Tend]
-                     [:##open_bracket :!Tpage_up]
-                     [:##quote :!Tpage_down]
-
-                     ;
-                     ]}
-
-                  {:des "option_movement_mode"
-                   :rules
-                   [;; start_rules
-                     :option_movement_mode
-
-                     [:##j :!Oleft_arrow]
-                     [:##i :!Oup_arrow]
-                     [:##k :!Odown_arrow]
-                     [:##l :!Oright_arrow]
-                     [:##u :!Ohome]
-                     [:##o :!Oend]
-                     [:##open_bracket :!Opage_up]
-                     [:##quote :!Opage_down]
-
-                     ;
-                     ]}
-                  ;
-                  {:des "delete_mode"
-                   :rules
-                   [;
-                     :delete_mode
-                     [:##a :delete_or_backspace]
-                     [:##left_shift :##left_shift nil {:alone :!Odelete_or_backspace}]
-                     [:##right_shift :##right_shift nil {:alone :##delete_forward}]
-                     ;
-                     ]}
 
                   {:des "caps_mode"
                    :rules
                    [;
                      :caps_mode
-                     [:##spacebar :delete_or_backspace]
+
+                     ; convenience snippets
+                     [:i :!S9]
+                     [:o :!S0]
+                     [:l [:spacebar :equal_sign :!Speriod :spacebar]]
+
+
                      ;
                      ]}
 
@@ -183,36 +179,18 @@
                   {:des "trackpad"
                    :rules
                    [;
-                     :multitouch_extension_finger_count_total
-                     [:##r :button1]
-                     [:##e :button3]
-                     [:##w :button2]
+                     [:condi ["multitouch_extension_finger_count_total" 1] :movement_mode]
 
-                     [:##j :button1]
-                     [:##k :button3]
-                     [:##l :button2]
+                     [:v [:button1 :!Cv] [:!terminals]]
+                     [:v [:button1 :!Tv] [:terminals]]
+                     [:b [:button1 :!Tb]]
+
+                     ; ctrl-w
+                     [:w [:button1 :!Tw] [:terminals]]
+                     [:w [:button1 :!Cw] [:!terminals]]
+
                      ;
 
-                     ]}
-
-;                  {:des "trackpad + movement"
-;                   :rules
-;                   [;
-;                     [:multitouch_extension_finger_count_total :movement_mode]
-;                     [:c :!Cc]
-;
-;                     [:v [:button1 :!Cv]]
-;                     ;
-;                     ]}
-
-
-                  {:des "trackpad 2-fingers"
-                   :rules
-                   [;
-                     [:condi ["multitouch_extension_finger_count_total" 2]]
-                     [:##d :left_option]
-                     [:##s :left_control]
-                     ;
                      ]}
 
                   {:des "modifier remapping"
