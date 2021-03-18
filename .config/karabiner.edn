@@ -59,6 +59,7 @@
                   :caps_mode         {:key :caps_lock :alone {:key :escape}}
                   :space_mode        {:key :spacebar :alone {:key :spacebar}}
                   :right_option_mode {:key :right_option :alone {:key :delete_forward}}
+                  :right_shift_mode  {:key :right_shift :alone {:key :delete_or_backspace}}
                   :movement_mode     {:key :fn}
                   ;
                   }
@@ -96,12 +97,13 @@
                   {:des "global remap"
                    :rules
                    [;
-
+                     [:##right_shift :delete_forward :movement_mode]
                      [:##right_shift :right_shift nil {:alone :delete_or_backspace}]
-                     [:##right_option :right_option nil {:alone :delete_forward }]
+                     [:##right_option :right_option nil {:alone :delete_forward}]
                      [:left_control :left_command [:!terminals]]
                      ;
                      ]}
+
 
                   {:des "movement_mode"
                    :rules
@@ -145,14 +147,21 @@
                      [:##w [:!Tw] [:terminals :!multitouch_extension_finger_count_total]]
                      [:##w [:!Cw] [:!terminals :!multitouch_extension_finger_count_total]]
 
-                      ; ctrl-t
-                     [:##t [:!Tw] [:terminals]]
-                     [:##t [:!Cw] [:!terminals]]
+                     ; ctrl-t
+                     [:##t [:!Tt] [:terminals]]
+                     [:##t [:!Ct] [:!terminals]]
+
+                     ; ctrl-hyphen / ctrl-equal_sign
+                     [:1 [:button1 :!Thyphen] [:terminals]]
+                     [:2 [:button1 :!Tequal_sign] [:terminals]]
+                     [:1 [:button1 :!Chyphen] [:!terminals]]
+                     [:2 [:button1 :!Cequal_sign] [:!terminals]]
 
                      ; mouse buttons
                      [:##f :button1]
-                     [:##d :button3]
-                     [:##s :button2]
+                     [:##d :button1]
+                     [:##s :button3]
+                     [:##a :button2]
 
                      ; remapping
                      [:##return_or_enter :end]
@@ -171,6 +180,7 @@
                      [:o :!S0]
                      [:l [:spacebar :equal_sign :!Speriod :spacebar]]
 
+                     [:1 :!!1]
 
                      ;
                      ]}
@@ -195,11 +205,23 @@
 
                   {:des "modifier remapping"
                    :rules
-                   [;
+                   [[;
+                      :##button3
+                      ["enable_mouse_motion_to_scroll" 1]
+                      nil
+                      {:afterup ["enable_mouse_motion_to_scroll" 0]}]
 
+                    ;
+                    ]}
 
-                   ;
-                     ]}
+                  {:des "mouse_motion_to_scroll"
+                   :rules
+                   [{;
+                      :type    :mouse_motion_to_scroll
+                      :from    {:modifiers {:mandatory [:fn]}}
+                      :options {:momentum_scroll_enabled true}
+                      ;
+                      }]}
                   ;
                   ]
   ;
