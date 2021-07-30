@@ -9,7 +9,7 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/jylee/.oh-my-zsh"
+export ZSH="/Users/john.lee/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -111,9 +111,10 @@ source $ZSH/oh-my-zsh.sh
 
 # NVM
 export NVM_DIR=~/.nvm
-source $(brew --prefix nvm)/nvm.sh
+source ~/.nvm/nvm.sh
 
 # autoload zfunc
 for file in ~/.zfunc/*;
     do autoload $file
 done
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
