@@ -166,6 +166,7 @@
                      ; remapping
                      [:##return_or_enter :end]
                      [:##spacebar :home]
+                     [:##delete_or_backspace :delete_forward]
                      ;
                      ]}
                   ;
@@ -181,7 +182,12 @@
                      [:l [:spacebar :equal_sign :!Speriod :spacebar]]
 
                      [:1 :!!1]
-
+                     [:2 :!!2]
+                     [:3 :!!3]
+                     [:a :!!left_arrow]
+                     [:d :!!right_arrow]
+                     [:w :!!up_arrow]
+                     [:s :!!down_arrow]
                      ;
                      ]}
 
