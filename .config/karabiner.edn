@@ -97,8 +97,9 @@
                   {:des "global remap"
                    :rules
                    [;
-                     [:##right_shift :delete_forward :movement_mode]
-                     [:##right_shift :right_shift nil {:alone :delete_or_backspace}]
+                     [:##fn ["movement_mode" 1] nil {:afterup ["movement_mode" 0]}]
+                     [:##caps_lock ["caps_mode" 1] nil {:afterup ["caps_mode" 0]}]
+
                      [:##right_option :right_option nil {:alone :delete_forward}]
                      [:left_control :left_command [:!terminals]]
                      ;
