@@ -7,4 +7,4 @@ ln -sf "$DIR"/.gitconfig ~/.gitconfig
 ln -sfn "$DIR"/.zfunc ~/.zfunc
 ln -sf "$DIR"/.ssh/config ~/.ssh/config
 ln -sf "$DIR"/.config/karabiner.edn ~/.config/karabiner.edn
-ln -sf "$DIR"/.hammerspoon ~/.hammerspoon
+ln -sfn "$DIR"/.hammerspoon ~/.hammerspoon
