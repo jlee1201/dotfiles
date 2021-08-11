@@ -59,7 +59,6 @@
                   :caps_mode         {:key :caps_lock :alone {:key :escape}}
                   :space_mode        {:key :spacebar :alone {:key :spacebar}}
                   :right_option_mode {:key :right_option :alone {:key :delete_forward}}
-                  :right_shift_mode  {:key :right_shift :alone {:key :delete_or_backspace}}
                   :movement_mode     {:key :fn}
                   ;
                   }
@@ -98,13 +97,31 @@
                    :rules
                    [;
                      [:##fn ["movement_mode" 1] nil {:afterup ["movement_mode" 0]}]
+                     [:##right_shift
+                      [["movement_mode" 1] ["right_shift_mode" 1]]
+                      nil
+                      {:afterup [["movement_mode" 0] ["right_shift_mode" 0]]}]
                      [:##caps_lock ["caps_mode" 1] nil {:afterup ["caps_mode" 0]}]
 
                      [:##right_option :right_option nil {:alone :delete_forward}]
-                     [:left_control :left_command [:!terminals]]
+                     ; [:left_control :left_command [:!terminals]]
+
+                     [{:sim [:i :j] :modi {:optional [:any] }} :home]
+                     [{:sim [:l :i] :modi {:optional [:any] }} :end]
+                     [{:sim [:j :k] :modi {:optional [:any] }} :!Tleft_arrow :terminals]
+                     [{:sim [:j :k] :modi {:optional [:any] }} :!Oleft_arrow :!terminals]
+                     [{:sim [:l :k] :modi {:optional [:any] }} :!Tright_arrow :terminals]
+                     [{:sim [:l :k] :modi {:optional [:any] }} :!Oright_arrow :!terminals]
                      ;
                      ]}
 
+                  {:des "right_shift_mode"
+                   :rules
+                   [;
+                     :right_shift_mode
+                     [:##slash :!Sslash]
+                     ;
+                     ]}
 
                   {:des "movement_mode"
                    :rules
@@ -126,8 +143,8 @@
                      [:##h :!Oleft_arrow [:!terminals]]
 
                      ; copy
-                     [:##c [:!Cc] [:!terminals]]
-                     [:##c [:!Tc] [:terminals]]
+                     [:##c [:!Cc] [:!terminals :!multitouch_extension_finger_count_total]]
+                     [:##c [:!Tc] [:terminals :!multitouch_extension_finger_count_total]]
 
                      ; cut
                      [:##x [:!Cx] [:!terminals]]
@@ -198,8 +215,15 @@
                    [;
                      [:condi ["multitouch_extension_finger_count_total" 1] :movement_mode]
 
+                     ; ctrl-c
+                     [:c :button1 [:!terminals] {:afterup [:!Cc]}]
+                     [:c :button1 [:terminals] {:afterup [:!Tc]}]
+
+                     ; ctrl-v
                      [:v [:button1 :!Cv] [:!terminals]]
                      [:v [:button1 :!Tv] [:terminals]]
+
+                     ; ctrl-b
                      [:b [:button1 :!Tb]]
 
                      ; ctrl-w
