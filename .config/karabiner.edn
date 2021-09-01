@@ -97,8 +97,8 @@
                    :rules
                    [;
                      [:##fn ["movement_mode" 1] nil {:afterup ["movement_mode" 0]}]
-                     [:##right_shift
-                      [["movement_mode" 1] ["right_shift_mode" 1]]
+                     [:##right_command
+                      [["movement_mode" 1] ["right_command_mode" 1]]
                       nil
                       {:afterup [["movement_mode" 0] ["right_shift_mode" 0]]}]
                      [:##caps_lock ["caps_mode" 1] nil {:afterup ["caps_mode" 0]}]
@@ -106,12 +106,6 @@
                      [:##right_option :right_option nil {:alone :delete_forward}]
                      ; [:left_control :left_command [:!terminals]]
 
-                     [{:sim [:i :j] :modi {:optional [:any] }} :home]
-                     [{:sim [:l :i] :modi {:optional [:any] }} :end]
-                     [{:sim [:j :k] :modi {:optional [:any] }} :!Tleft_arrow :terminals]
-                     [{:sim [:j :k] :modi {:optional [:any] }} :!Oleft_arrow :!terminals]
-                     [{:sim [:l :k] :modi {:optional [:any] }} :!Tright_arrow :terminals]
-                     [{:sim [:l :k] :modi {:optional [:any] }} :!Oright_arrow :!terminals]
                      ;
                      ]}
 
@@ -119,7 +113,6 @@
                    :rules
                    [;
                      :right_shift_mode
-                     [:##slash :!Sslash]
                      ;
                      ]}
 
@@ -127,6 +120,13 @@
                    :rules
                    [;
                      :movement_mode
+
+                     [{:sim [:i :j] :modi {:optional [:any]}} :home]
+                     [{:sim [:l :i] :modi {:optional [:any]}} :end]
+                     [{:sim [:j :k] :modi {:optional [:any]}} :!Tleft_arrow :terminals]
+                     [{:sim [:j :k] :modi {:optional [:any]}} :!Oleft_arrow :!terminals]
+                     [{:sim [:l :k] :modi {:optional [:any]}} :!Tright_arrow :terminals]
+                     [{:sim [:l :k] :modi {:optional [:any]}} :!Oright_arrow :!terminals]
 
                      ; arrows
                      [:##j :left_arrow]
@@ -227,8 +227,8 @@
                      [:b [:button1 :!Tb]]
 
                      ; ctrl-w
-                     [:w [:button1 :!Tw] [:terminals]]
-                     [:w [:button1 :!Cw] [:!terminals]]
+                     [:w :button1 [:terminals] {:afterup [:!Tw]}]
+                     [:w :button1 [:!terminals] {:afterup [:!Cw]}]
 
                      ;
 
