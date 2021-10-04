@@ -97,10 +97,10 @@
                    :rules
                    [;
                      [:##fn ["movement_mode" 1] nil {:afterup ["movement_mode" 0]}]
-                     [:##right_command
-                      [["movement_mode" 1] ["right_command_mode" 1]]
+                     [:##up_arrow
+                      [["movement_mode" 1] ["up_arrow_mode" 1]]
                       nil
-                      {:afterup [["movement_mode" 0] ["right_shift_mode" 0]]}]
+                      {:afterup [["movement_mode" 0] ["up_arrow_mode" 0]]}]
                      [:##caps_lock ["caps_mode" 1] nil {:afterup ["caps_mode" 0]}]
 
                      [:##right_option :right_option nil {:alone :delete_forward}]
