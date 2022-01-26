@@ -197,7 +197,9 @@
                      ; convenience snippets
                      [:i :!S9]
                      [:o :!S0]
+                     ; caps + "right" -->
                      [:l [:spacebar :equal_sign :!Speriod :spacebar]]
+
 
                      [:1 :!!1]
                      [:2 :!!2]
