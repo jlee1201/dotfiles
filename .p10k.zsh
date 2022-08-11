@@ -1732,4 +1732,5 @@ function p10k-on-pre-prompt() {
 }
 function p10k-on-post-prompt() {
     p10k display '1'=hide '2/left/exectime'=show '2/left_frame'=hide
+    # echo ""
 }
