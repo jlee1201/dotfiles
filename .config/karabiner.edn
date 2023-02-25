@@ -238,14 +238,14 @@
 
                   {:des "modifier remapping"
                    :rules
-                   [[;
-                      :##button3
+                   [;
+                     :movement_mode
+                     [:##s
                       ["enable_mouse_motion_to_scroll" 1]
                       nil
                       {:afterup ["enable_mouse_motion_to_scroll" 0]}]
-
-                    ;
-                    ]}
+                     ;
+                     ]}
 
                   {:des "mouse_motion_to_scroll"
                    :rules
