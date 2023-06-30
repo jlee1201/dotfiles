@@ -1,14 +1,14 @@
-# both .profile AND .bash_profile
+# all shells load this file in interactive mode (usually the -i switch)
+export DOT_PROFILE_LOADED=1
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/Library/Python/3.8/bin:$HOME/.rvm/bin"
+export PATH="$PATH:$HOME/Library/Python/3.8/bin:$HOME/.rvm/bin:/Applications/IntelliJ IDEA.app/Contents/MacOS"
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-
 
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
