@@ -4,6 +4,7 @@
 [core]
 	autocrlf = input
 	excludesfile = /Users/john.lee/.gitignore_global
+	hooksPath = /Users/john.lee/.gusto/githooks
 [filter "lfs"]
 	process = git-lfs filter-process
 	required = true
@@ -11,3 +12,5 @@
 	smudge = git-lfs smudge -- %f
 [rebase]
 	autoStash = true
+[credential]
+	helper = osxkeychain
