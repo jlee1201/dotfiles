@@ -59,7 +59,6 @@
                   :caps_mode         {:key :caps_lock :alone {:key :escape}}
                   :space_mode        {:key :spacebar :alone {:key :spacebar}}
                   :right_option_mode {:key :right_option :alone {:key :delete_forward}}
-                  :movement_mode     {:key :fn}
                   ;
                   }
 
@@ -96,6 +95,7 @@
                   {:des "global remap"
                    :rules
                    [;
+                     ; mode switching
                      [:##fn ["movement_mode" 1] nil {:afterup ["movement_mode" 0]}]
                      [:##up_arrow
                       [["movement_mode" 1] ["up_arrow_mode" 1]]
@@ -104,7 +104,6 @@
                      [:##caps_lock ["caps_mode" 1] nil {:afterup ["caps_mode" 0]}]
 
                      [:##right_option :right_option nil {:alone :delete_forward}]
-                     ; [:left_control :left_command [:!terminals]]
 
                      ;
                      ]}
@@ -262,6 +261,42 @@
                       :options {:momentum_scroll_enabled true}
                       ;
                       }]}
+
+                  {:des "non-terminals"
+                   :rules
+                   [;
+                     :!terminals
+
+                     ;f-keys
+                     [:f1 {:ckey :display_brightness_decrement}]
+                     [:f2 {:ckey :display_brightness_increment}]
+                     [:f3 :!!up_arrow]
+                     [:f4 :!Cspacebar]
+                     [:f5 {:ckey :dictation}]
+                     [:f6 :!COeject]
+                     [:f10 {:ckey :mute}]
+                     [:f11 {:ckey :volume_decrement}]
+                     [:f12 {:ckey :volume_increment}]
+                     ;
+                     ]}
+
+                  {:des "fn + fkeys"
+                   :rules
+                   [;
+                     :movement_mode
+
+                     ;f-keys
+                     [:f1 {:ckey :display_brightness_decrement}]
+                     [:f2 {:ckey :display_brightness_increment}]
+                     [:f3 :!!up_arrow]
+                     [:f4 :!Cspacebar]
+                     [:f5 {:ckey :dictation}]
+                     [:f6 :!COeject]
+                     [:f10 {:ckey :mute}]
+                     [:f11 {:ckey :volume_decrement}]
+                     [:f12 {:ckey :volume_increment}]
+                     ;
+                     ]}
                   ;
                   ]
   ;
