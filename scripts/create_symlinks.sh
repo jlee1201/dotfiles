@@ -11,3 +11,4 @@ ln -sfn "$DIR"/.zfunc ~/.zfunc
 ln -sf "$DIR"/.ssh/config ~/.ssh/config
 ln -sf "$DIR"/.config/karabiner.edn ~/.config/karabiner.edn
 ln -sfn "$DIR"/.hammerspoon ~/.hammerspoon
+ln -sf "$DIR"/nvm/default-packages "$NVM_DIR"/default-packages
