@@ -114,7 +114,7 @@ for file in ~/.zfunc/*;
     do autoload $file
 done
 
-# load .profile if it hasn't been loaded yet
+# load .profile if it hasn't been loaded yet (make changes to this file)
 if [ -z "$DOT_PROFILE_LOADED" ]; then source ~/.profile; fi
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
