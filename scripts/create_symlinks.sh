@@ -14,7 +14,6 @@ ln -sf "$DIR"/.gitignore ~/.gitignore
 ln -sf "$DIR"/.p10k.zsh ~/.p10k.zsh
 ln -sf "$DIR"/.profile ~/.profile
 ln -sf "$DIR"/.profile ~/.bash_profile
+ln -sf "$DIR"/.profile ~/.zprofile
 ln -sf "$DIR"/.ruby-version ~/.ruby-version
 ln -sf "$DIR"/.zshrc ~/.zshrc
-
-
