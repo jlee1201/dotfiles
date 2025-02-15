@@ -7,8 +7,5 @@ export NVM_DIR="$HOME/.nvm"
 
 export PATH="$PATH:$HOME/Library/Python/3.8/bin:/Applications/IntelliJ IDEA.app/Contents/MacOS"
 
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/john.lee/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
 
 source ~/.gusto/init.sh

@@ -16,3 +16,5 @@
 	helper = osxkeychain
 [pull]
 	rebase = true
+[maintenance]
+	repo = /Users/john.lee/workspace/zenpayroll
