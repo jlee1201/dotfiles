@@ -117,6 +117,3 @@ done
 # load .profile if it hasn't been loaded yet (make changes to this file)
 if [ -z "$DOT_PROFILE_LOADED" ]; then source ~/.profile; fi
 
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/john.lee/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)

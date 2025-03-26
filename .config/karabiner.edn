@@ -287,7 +287,13 @@
                      ]}
 
                   {:des   "Remap Ctrl+Tab to Ctrl+`"
-                   :rules [[:!Ttab :!Tgrave_accent_and_tilde :edge_app]]}
+                   :rules [;
+                            [:!Ttab :!Tgrave_accent_and_tilde :edge_app]
+                            [:tab :!Tgrave_accent_and_tilde [:edge_app :movement_mode]]
+                            ;
+                            ]
+                   ;
+                   }
 
                   {:des "fn + fkeys"
                    :rules
