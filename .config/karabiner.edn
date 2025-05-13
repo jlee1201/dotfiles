@@ -84,6 +84,10 @@
                                    "com.microsoft.edgemac"
                                    ;
                                    ]
+                  :cursor_app     [;
+                                    "com.todesktop.230313mzl4w4u92"
+                                    ;
+                                   ]
                   ;
                   }
   ;
@@ -127,19 +131,19 @@
                      :movement_mode
 
                      ; home / end
-                     [{:sim [:i :j] :modi {:optional [:any]}} :home :terminals]
-                     [{:sim [:l :i] :modi {:optional [:any]}} :end :terminals]
-                     [{:sim [:i :j] :modi {:optional [:any]}} :!Cleft_arrow :!terminals]
-                     [{:sim [:l :i] :modi {:optional [:any]}} :!Cright_arrow :!terminals]
                      [:##spacebar :home :terminals]
                      [:##return_or_enter :end :terminals]
                      [:##spacebar :!Cleft_arrow :!terminals]
                      [:##return_or_enter :!Cright_arrow :!terminals]
 
                      ; ctrl / alt + arrow
+                     [{:sim [:j :i] :modi {:optional [:any]}} :!Tleft_arrow :terminals]
                      [{:sim [:j :k] :modi {:optional [:any]}} :!Tleft_arrow :terminals]
+                     [{:sim [:j :i] :modi {:optional [:any]}} :!Oleft_arrow :!terminals]
                      [{:sim [:j :k] :modi {:optional [:any]}} :!Oleft_arrow :!terminals]
+                     [{:sim [:l :i] :modi {:optional [:any]}} :!Tright_arrow :terminals]
                      [{:sim [:l :k] :modi {:optional [:any]}} :!Tright_arrow :terminals]
+                     [{:sim [:l :i] :modi {:optional [:any]}} :!Oright_arrow :!terminals]
                      [{:sim [:l :k] :modi {:optional [:any]}} :!Oright_arrow :!terminals]
 
                      ; arrows
