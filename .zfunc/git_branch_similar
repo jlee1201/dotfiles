@@ -1,9 +1,0 @@
-#!/bin/env zsh
-PWD=$(pwd)
-TARGET=${2:-$(pwd)}
-SRC=${1}
-BRANCH=$(git -C $SRC symbolic-ref --short HEAD)
-
-cd $TARGET
-git checkout -b $BRANCH
-git
