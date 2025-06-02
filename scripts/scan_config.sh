@@ -52,7 +52,7 @@ add_symlink_command() {
     # Create the new symlink command
     local cmd="ln -sf \"\$HOME_DIR/.config/$rel_path\" ~/.config/$rel_path"
     
-    # Insert the command after the determined line
+    # Insert the command on a new line after the determined line
     sed -i.bak "${insert_line}a\\
 $cmd" "$SYMLINKS_SCRIPT"
     

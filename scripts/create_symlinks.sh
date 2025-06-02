@@ -8,7 +8,10 @@ mkdir -p ~/.config
 # Individual .config files and directories
 ln -sf "$HOME_DIR/.config/karabiner.edn" ~/.config/karabiner.edn
 # Add more .config files as needed here
-
+ln -sf "$HOME_DIR/.config/mise" ~/.config/mise
+ln -sf "$HOME_DIR/.config/git" ~/.config/git
+ln -sf "$HOME_DIR/.config/gh" ~/.config/gh
+ln -sf "$HOME_DIR/.config/claude-code-launcher" ~/.config/claude-code-launcher
 # symlinked nested directories 
 ln -sfn "$HOME_DIR/.hammerspoon" ~/.hammerspoon
 ln -sf "$HOME_DIR/.ssh/config" ~/.ssh/config
