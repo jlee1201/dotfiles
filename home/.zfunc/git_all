@@ -1,0 +1,31 @@
+#!/bin/env zsh
+
+MAXDEPTH=${MAXDEPTH:-2}
+
+# first capture args so it can be passed as a string with spaces
+setopt ksh_arrays # zsh uses 1-based indices on arrays!  this sets it back to 0-based
+declare -a ARGS
+COUNT=$#
+for ((INDEX=0; INDEX<COUNT; ++INDEX))
+do
+    ARG="$(printf "%q" "$1")"
+    ARGS[INDEX]="$(printf "%q" "$ARG")"
+    shift
+done
+unsetopt ksh_arrays # restore
+
+
+
+## find every git repo and run command across each git repo
+#find . -name ".git" -type d | rev | cut -c 6- | rev | cut -c 3- | nl | \
+#  xargs  -P10 -n 2 \
+#  sh -c "git -C $1 ${ARGS[*]} | sed 's#^#$(tput setaf "$0")[$1]: $(tput sgr0)#
+
+COLOR=0
+
+find . -name ".git" -type d -maxdepth "$MAXDEPTH" | rev | cut -c 6- | rev | \
+  while read -r -d $'\n' REPO
+  do
+      ((COLOR+=1))
+      (sh -c "git -C $REPO ${ARGS[*]} 2>&1 | sed 's#^#$(tput setaf "$COLOR")[$REPO]: $(tput sgr0)#'" & wait)
+  done

@@ -1,0 +1,19 @@
+[user]
+	name = John Lee
+	email = jlee1201@users.noreply.github.com
+[core]
+	autocrlf = input
+	excludesfile = /Users/john.lee/.gitignore_global
+[filter "lfs"]
+	process = git-lfs filter-process
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+[rebase]
+	autoStash = true
+[credential]
+	helper = osxkeychain
+[pull]
+	rebase = true
+[maintenance]
+	repo = /Users/john.lee/workspace/zenpayroll

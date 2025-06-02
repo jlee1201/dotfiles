@@ -1,0 +1,322 @@
+;; !  | means mandatory
+;; #  | means optional
+;; C  | left_command
+;; T  | left_control
+;; O  | left_option
+;; S  | left_shift
+;; F  | fn
+;; Q  | right_command
+;; W  | right_control
+;; E  | right_option
+;; R  | right_shift
+;; P  | caps_lock
+;; !! | mandatory command + control + optional + shift (hyper)
+;; ## | optional any
+
+{;
+  :default      true
+
+  ;; keys need to be pressed within this threshold to be considered simultaneous
+  ; simultaneous_threshold_milliseconds (def: 50)
+  :sim          100
+  ;; basically it means time after which the key press is count delayed
+  ; to_delayed_action_delay_milliseconds (def: 500)
+  :delay        500
+  ;; hold for 995s and single tap registered; hold for 1005s and seen as modifier
+  ; to_if_alone_timeout_milliseconds (def: 1000)
+  :alone        1000
+  ;; key is fired twice when 500 ms is elapsed (otherwise seen as a hold command)
+  ; to_if_held_down_threshold_milliseconds (def: 500)
+  :held         1000
+
+  :templates    {;
+                  :km   "osascript -e 'tell application \"Keyboard Maestro Engine\" to do script \"%s\"'"
+                  :open "open \"%s\""
+                  ;
+                  }
+  ;; templates
+
+  :modifiers    {;
+                  :super-hyper [:command :shift :control :option :fn]
+                  :hyper       [:command :shift :control :option]
+                  :cos         [:command :shift :option]
+                  :cst         [:command :shift :control]
+                  :co          [:command :option]
+                  :cs          [:command :shift]
+                  :ct          [:command :control]
+                  :to          [:control :option]
+                  :ts          [:control :shift]
+                  :os          [:option :shift]
+                  ;
+                  }
+  :froms        {;
+                  :delete {:key :delete_or_backspace}
+                  :return {:key :return_or_enter}
+                  :tilde  {:key :grave_accent_and_tilde}
+                  ;
+                  }
+  :layers       {;
+                  :caps_mode         {:key :caps_lock :alone {:key :escape}}
+                  :space_mode        {:key :spacebar :alone {:key :spacebar}}
+                  :right_option_mode {:key :right_option :alone {:key :delete_forward}}
+                  ;
+                  }
+
+  :simlayers    {;
+                  :launch-mode {:key :tab}
+                  :delete_mode {:key :spacebar}
+                  :bypass_mode {:key :escape}
+                  ;
+                  }
+
+  :applications {;
+                  :terminals     [;
+                                   "com.jetbrains.intellij",
+                                   "com.googlecode.iterm2"
+                                   ;
+                                   ]
+                  ;
+                  :home_end_apps [;
+                                   "com.outlook"
+                                   ;
+                                   ]
+                  :edge_app      [;
+                                   "com.microsoft.edgemac"
+                                   ;
+                                   ]
+                  :cursor_app     [;
+                                    "com.todesktop.230313mzl4w4u92"
+                                    ;
+                                   ]
+                  ;
+                  }
+  ;
+  :main         [;
+                ;               {:des "easier to reach modifier keys"
+                ;                :rules
+                ;                [;
+                ;                  [:##f :left_command nil {:alone :f}]
+                ;                  [:##d :left_option nil {:alone :d}]
+                ;                  [:##s :left_control nil {:alone :s}]
+                ;
+                ;                  ;
+                ;                  ]}
+
+                  {:des "global remap"
+                   :rules
+                   [;
+                   ; mode switching
+                     [:##fn ["movement_mode" 1] nil {:afterup ["movement_mode" 0]}]
+                     [:##up_arrow
+                      [["movement_mode" 1] ["up_arrow_mode" 1]]
+                      nil
+                      {:afterup [["movement_mode" 0] ["up_arrow_mode" 0]]}]
+                     [:##caps_lock ["caps_mode" 1] nil {:afterup ["caps_mode" 0]}]
+
+                     [:##right_option :right_option nil {:alone :delete_forward}]
+
+                     ;
+                     ]}
+
+                  {:des "right_shift_mode"
+                   :rules
+                   [;
+                     :right_shift_mode
+                     ;
+                     ]}
+
+                  {:des "movement_mode"
+                   :rules
+                   [;
+                     :movement_mode
+
+                     ; home / end
+                     [:##spacebar :home :terminals]
+                     [:##return_or_enter :end :terminals]
+                     [:##spacebar :!Cleft_arrow :!terminals]
+                     [:##return_or_enter :!Cright_arrow :!terminals]
+
+                     ; ctrl / alt + arrow
+                     [{:sim [:j :i] :modi {:optional [:any]}} :!Tleft_arrow :terminals]
+                     [{:sim [:j :k] :modi {:optional [:any]}} :!Tleft_arrow :terminals]
+                     [{:sim [:j :i] :modi {:optional [:any]}} :!Oleft_arrow :!terminals]
+                     [{:sim [:j :k] :modi {:optional [:any]}} :!Oleft_arrow :!terminals]
+                     [{:sim [:l :i] :modi {:optional [:any]}} :!Tright_arrow :terminals]
+                     [{:sim [:l :k] :modi {:optional [:any]}} :!Tright_arrow :terminals]
+                     [{:sim [:l :i] :modi {:optional [:any]}} :!Oright_arrow :!terminals]
+                     [{:sim [:l :k] :modi {:optional [:any]}} :!Oright_arrow :!terminals]
+
+                     ; arrows
+                     [:##j :left_arrow]
+                     [:##i :up_arrow]
+                     [:##k :down_arrow]
+                     [:##l :right_arrow]
+
+                     [:##p :page_up]
+                     [:##n :page_down]
+
+                     [:##semicolon :!Tright_arrow [:terminals]]
+                     [:##semicolon :!Oright_arrow [:!terminals]]
+                     [:##h :!Tleft_arrow [:terminals]]
+                     [:##h :!Oleft_arrow [:!terminals]]
+
+                     ; copy
+                     [:##c [:!Cc] [:!terminals :!multitouch_extension_finger_count_total]]
+                     [:##c [:!Tc] [:terminals :!multitouch_extension_finger_count_total]]
+
+                     ; cut
+                     [:##x [:!Cx] [:!terminals]]
+                     [:##x [:!Tx] [:terminals]]
+
+                     ; paste
+                     [:##v [:!Cv] [:!terminals :!multitouch_extension_finger_count_total]]
+                     [:##v [:!Tv] [:terminals :!multitouch_extension_finger_count_total]]
+
+                     ; undo
+                     [:##z [:!Cz] [:!terminals]]
+                     [:##z [:!Tz] [:terminals]]
+
+                     ; lookup ctrl-b
+                     [:##b [:!Tb] [:terminals :!multitouch_extension_finger_count_total]]
+
+                     ; ctrl-w
+                     [:##w [:!Tw] [:terminals :!multitouch_extension_finger_count_total]]
+                     [:##w [:!Cw] [:!terminals :!multitouch_extension_finger_count_total]]
+
+                     ; ctrl-t
+                     [:##t [:!Tt] [:terminals]]
+                     [:##t [:!Ct] [:!terminals]]
+
+                     ; ctrl-hyphen / ctrl-equal_sign
+                     [:1 [:button1 :!Thyphen] [:terminals]]
+                     [:2 [:button1 :!Tequal_sign] [:terminals]]
+                     [:1 [:button1 :!Chyphen] [:!terminals]]
+                     [:2 [:button1 :!Cequal_sign] [:!terminals]]
+
+                     ; mouse buttons
+                     [:##f :button1]
+                     [:##d :button1]
+                     [:##s :button3]
+                     [:##a :button2]
+
+                     ; remapping
+                     [:##delete_or_backspace :delete_forward]
+                     ;
+                     ]}
+                  ;
+
+                  {:des "caps_mode"
+                   :rules
+                   [;
+                     :caps_mode
+
+                     ; convenience snippets
+                     [:i :!S9]
+                     [:o :!S0]
+                     ; caps + "right" -->
+                     [:l [:spacebar :equal_sign :!Speriod :spacebar]]
+
+
+                     [:1 :!!1]
+                     [:2 :!!2]
+                     [:3 :!!3]
+                     [:a :!!left_arrow]
+                     [:d :!!right_arrow]
+                     [:w :!!up_arrow]
+                     [:s :!!down_arrow]
+                     ;
+                     ]}
+
+
+                  {:des "trackpad"
+                   :rules
+                   [;
+                     [:condi ["multitouch_extension_finger_count_total" 1] :movement_mode]
+
+                     ; ctrl-c
+                     [:c :button1 [:!terminals] {:afterup [:!Cc]}]
+                     [:c :button1 [:terminals] {:afterup [:!Tc]}]
+
+                     ; ctrl-v
+                     [:v [:button1 :!Cv] [:!terminals]]
+                     [:v [:button1 :!Tv] [:terminals]]
+
+                     ; ctrl-b
+                     [:b [:button1 :!Tb]]
+
+                     ; ctrl-w
+                     [:w :button1 [:terminals] {:afterup [:!Tw]}]
+                     [:w :button1 [:!terminals] {:afterup [:!Cw]}]
+
+                     ;
+
+                     ]}
+
+                  {:des "modifier remapping"
+                   :rules
+                   [;
+                     :movement_mode
+                     [:##s
+                      ["enable_mouse_motion_to_scroll" 1]
+                      nil
+                      {:afterup ["enable_mouse_motion_to_scroll" 0]}]
+                     ;
+                     ]}
+
+                  {:des "mouse_motion_to_scroll"
+                   :rules
+                   [{;
+                      :type    :mouse_motion_to_scroll
+                      :from    {:modifiers {:mandatory [:fn]}}
+                      :options {:momentum_scroll_enabled true}
+                      ;
+                      }]}
+
+                  {:des "non-terminals"
+                   :rules
+                   [;
+                     :!terminals
+
+                     ;f-keys
+                     [:f1 {:ckey :display_brightness_decrement} [:!cursor_app]]
+                     [:f2 {:ckey :display_brightness_increment} [:!cursor_app]]
+                     [:f3 :!!up_arrow [:!cursor_app]]
+                     [:f4 :!Cspacebar [:!cursor_app]]
+                     [:f5 {:ckey :dictation} [:!cursor_app]]
+                     [:f6 :!COeject [:!cursor_app]]
+                     [:f10 {:ckey :mute} [:!cursor_app]]
+                     [:f11 {:ckey :volume_decrement} [:!cursor_app]]
+                     [:f12 {:ckey :volume_increment} [:!cursor_app]]
+                     ;
+                     ]}
+
+                  {:des   "Remap Ctrl+Tab to Ctrl+` - previous tab in edge"
+                   :rules [;
+                            [:!Ttab :!Tgrave_accent_and_tilde :edge_app]
+                            [:tab :!Tgrave_accent_and_tilde [:edge_app :movement_mode]]
+                            ;
+                            ]
+                   ;
+                   }
+
+                  {:des "fn + fkeys"
+                   :rules
+                   [;
+                     :movement_mode
+
+                     ;f-keys
+                     [:f1 {:ckey :display_brightness_decrement}]
+                     [:f2 {:ckey :display_brightness_increment}]
+                     [:f3 :!!up_arrow]
+                     [:f4 :!Cspacebar]
+                     [:f5 {:ckey :dictation}]
+                     [:f6 :!COeject]
+                     [:f10 {:ckey :mute}]
+                     [:f11 {:ckey :volume_decrement}]
+                     [:f12 {:ckey :volume_increment}]
+                     ;
+                     ]}
+                  ;
+                  ]
+  ;
+  }

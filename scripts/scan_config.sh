@@ -4,10 +4,10 @@
 # Get the dotfiles directory
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." >/dev/null 2>&1 && pwd )"
 CONFIG_DIR="$HOME/.config"
-DOTFILES_CONFIG_DIR="$DOTFILES_DIR/.config"
+DOTFILES_CONFIG_DIR="$DOTFILES_DIR/home/.config"
 SYMLINKS_SCRIPT="$DOTFILES_DIR/scripts/create_symlinks.sh"
 
-# Create .config directory in dotfiles if it doesn't exist
+# Create .config directory in dotfiles home if it doesn't exist
 mkdir -p "$DOTFILES_CONFIG_DIR"
 
 # Function to check if a file is already symlinked
@@ -48,7 +48,7 @@ add_symlink_command() {
     fi
     
     # Create the new symlink command
-    local cmd="ln -sf \"\$DIR\"/.config/$rel_path ~/.config/$rel_path"
+    local cmd="ln -sf \"\$HOME_DIR/.config/$rel_path\" ~/.config/$rel_path"
     
     # Insert the command after the determined line
     sed -i.bak "${insert_line}a\\
@@ -107,7 +107,7 @@ scan_config() {
       # Add symlink command to create_symlinks.sh if not already there
       if ! grep -q "ln -sf.*\.config/$rel_path" "$SYMLINKS_SCRIPT"; then
         local insert_line=$(grep -n "# Add more .config files as needed here" "$SYMLINKS_SCRIPT" | tail -1 | cut -d: -f1)
-        local cmd="ln -sf \"\$DIR\"/.config/$rel_path ~/.config/$rel_path"
+        local cmd="ln -sf \"\$HOME_DIR/.config/$rel_path\" ~/.config/$rel_path"
         
         sed -i.bak "${insert_line}i\\
 $cmd" "$SYMLINKS_SCRIPT"
@@ -125,7 +125,7 @@ $cmd" "$SYMLINKS_SCRIPT"
       # Add symlink command to create_symlinks.sh if not already there
       if ! grep -q "ln -sf.*\.config/$rel_path" "$SYMLINKS_SCRIPT"; then
         local insert_line=$(grep -n "# Add more .config files as needed here" "$SYMLINKS_SCRIPT" | tail -1 | cut -d: -f1)
-        local cmd="ln -sf \"\$DIR\"/.config/$rel_path ~/.config/$rel_path"
+        local cmd="ln -sf \"\$HOME_DIR/.config/$rel_path\" ~/.config/$rel_path"
         
         sed -i.bak "${insert_line}i\\
 $cmd" "$SYMLINKS_SCRIPT"

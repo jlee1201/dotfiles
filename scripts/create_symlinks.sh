@@ -1,24 +1,25 @@
 #!/usr/bin/env bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." >/dev/null 2>&1 && pwd )"
+HOME_DIR="$DIR/home"
 
 # Create .config directory if it doesn't exist
 mkdir -p ~/.config
 
 # Individual .config files and directories
-ln -sf "$DIR"/.config/karabiner.edn ~/.config/karabiner.edn
+ln -sf "$HOME_DIR/.config/karabiner.edn" ~/.config/karabiner.edn
 # Add more .config files as needed here
 
 # symlinked nested directories 
-ln -sfn "$DIR"/.hammerspoon ~/.hammerspoon
-ln -sf "$DIR"/.ssh/config ~/.ssh/config
-ln -sfn "$DIR"/.zfunc ~/.zfunc
+ln -sfn "$HOME_DIR/.hammerspoon" ~/.hammerspoon
+ln -sf "$HOME_DIR/.ssh/config" ~/.ssh/config
+ln -sfn "$HOME_DIR/.zfunc" ~/.zfunc
 
 # symlinked files
-ln -sf "$DIR"/.gitconfig ~/.gitconfig
-ln -sf "$DIR"/.gitignore ~/.gitignore
-ln -sf "$DIR"/.p10k.zsh ~/.p10k.zsh
-ln -sf "$DIR"/.profile ~/.profile
-ln -sf "$DIR"/.profile ~/.bash_profile
-ln -sf "$DIR"/.profile ~/.zprofile
-ln -sf "$DIR"/.ruby-version ~/.ruby-version
-ln -sf "$DIR"/.zshrc ~/.zshrc
+ln -sf "$HOME_DIR/.gitconfig" ~/.gitconfig
+ln -sf "$HOME_DIR/.gitignore" ~/.gitignore
+ln -sf "$HOME_DIR/.p10k.zsh" ~/.p10k.zsh
+ln -sf "$HOME_DIR/.profile" ~/.profile
+ln -sf "$HOME_DIR/.profile" ~/.bash_profile
+ln -sf "$HOME_DIR/.profile" ~/.zprofile
+ln -sf "$HOME_DIR/.ruby-version" ~/.ruby-version
+ln -sf "$HOME_DIR/.zshrc" ~/.zshrc
