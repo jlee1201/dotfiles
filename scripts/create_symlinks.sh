@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." >/dev/null 2>&1 && pwd )"
 
-# symlinked nested
+# Create .config directory if it doesn't exist
+mkdir -p ~/.config
+
+# Individual .config files and directories
 ln -sf "$DIR"/.config/karabiner.edn ~/.config/karabiner.edn
+# Add more .config files as needed here
+
+# symlinked nested directories 
 ln -sfn "$DIR"/.hammerspoon ~/.hammerspoon
 ln -sf "$DIR"/.ssh/config ~/.ssh/config
 ln -sfn "$DIR"/.zfunc ~/.zfunc
-ln -sf "$DIR"/nvm/default-packages "$NVM_DIR"/default-packages
 
 # symlinked files
 ln -sf "$DIR"/.gitconfig ~/.gitconfig

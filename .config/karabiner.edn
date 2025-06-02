@@ -278,19 +278,19 @@
                      :!terminals
 
                      ;f-keys
-                     [:f1 {:ckey :display_brightness_decrement}]
-                     [:f2 {:ckey :display_brightness_increment}]
-                     [:f3 :!!up_arrow]
-                     [:f4 :!Cspacebar]
-                     [:f5 {:ckey :dictation}]
-                     [:f6 :!COeject]
-                     [:f10 {:ckey :mute}]
-                     [:f11 {:ckey :volume_decrement}]
-                     [:f12 {:ckey :volume_increment}]
+                     [:f1 {:ckey :display_brightness_decrement} [:!cursor_app]]
+                     [:f2 {:ckey :display_brightness_increment} [:!cursor_app]]
+                     [:f3 :!!up_arrow [:!cursor_app]]
+                     [:f4 :!Cspacebar [:!cursor_app]]
+                     [:f5 {:ckey :dictation} [:!cursor_app]]
+                     [:f6 :!COeject [:!cursor_app]]
+                     [:f10 {:ckey :mute} [:!cursor_app]]
+                     [:f11 {:ckey :volume_decrement} [:!cursor_app]]
+                     [:f12 {:ckey :volume_increment} [:!cursor_app]]
                      ;
                      ]}
 
-                  {:des   "Remap Ctrl+Tab to Ctrl+`"
+                  {:des   "Remap Ctrl+Tab to Ctrl+` - previous tab in edge"
                    :rules [;
                             [:!Ttab :!Tgrave_accent_and_tilde :edge_app]
                             [:tab :!Tgrave_accent_and_tilde [:edge_app :movement_mode]]

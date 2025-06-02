@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(chmod:*)",
+      "Bash(./scripts/create_symlinks.sh:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": []
+  }
+}
