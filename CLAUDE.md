@@ -12,6 +12,18 @@ This is a personal dotfiles repository containing configuration files and setup 
   - Creates symbolic links from the dotfiles in this repository to the home directory
   - This is the primary setup command for this repository
 
+- **Adding individual files/directories to dotfiles**: `./scripts/add_to_dotfiles.sh ~/filename`
+  - Adds a specific file or directory from the home directory to dotfiles management
+  - Automatically moves the file/directory to the dotfiles repository and creates a symlink
+  - Handles files, directories, and existing symlinks properly
+  - Updates the `create_symlinks.sh` script with the new symlink entry
+  - Example: `./scripts/add_to_dotfiles.sh ~/.vimrc` or `./scripts/add_to_dotfiles.sh ~/.local`
+
+- **Scanning config directory**: `./scripts/scan_config.sh`
+  - Interactive script that scans ~/.config directory for files/directories
+  - Prompts user to add each item to dotfiles management
+  - Useful for bulk configuration management
+
 - **Setting keyboard repeat rate**: `./scripts/keyboard_repeat_rate.sh`
   - Sets macOS keyboard repeat settings (requires re-login to take effect)
 
@@ -23,6 +35,8 @@ This is a personal dotfiles repository containing configuration files and setup 
 
 - `/scripts/`: Utility scripts for environment setup
   - `create_symlinks.sh`: Creates symbolic links to home directory
+  - `add_to_dotfiles.sh`: Adds individual files/directories to dotfiles management
+  - `scan_config.sh`: Interactive script for scanning and managing ~/.config files
   - `gh_query.sh`: GitHub API query script for pull requests 
   - `keyboard_repeat_rate.sh`: Sets keyboard repeat rate on macOS
 
@@ -58,8 +72,9 @@ This is a personal dotfiles repository containing configuration files and setup 
    - Changes should be committed to this repository
 
 2. **Adding New Configuration**:
-   - Add new files to the appropriate location in this repository
-   - Update `create_symlinks.sh` to create the required symlinks
+   - **Easy way**: Use `./scripts/add_to_dotfiles.sh ~/filename` to automatically add a file or directory to dotfiles management
+   - **Manual way**: Add new files to the appropriate location in this repository and update `create_symlinks.sh` to create the required symlinks
+   - For bulk ~/.config management, use `./scripts/scan_config.sh` for interactive processing
 
 3. **Testing Changes**:
    - After making changes, run `./scripts/create_symlinks.sh` to update the symlinks

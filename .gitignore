@@ -4,3 +4,9 @@
 .config/karabiner/
 .config/iterm2
 .env
+
+# claude
+home/.claude/*
+!home/.claude/CLAUDE.md
+!home/.claude/mcp.json
+!home/.claude/settings.json

@@ -1,0 +1,4 @@
+- allow referencing hidden files prefixed with a "." including directories that are prefixed with "." like ".buildkite"
+- don't add the claude co-authorship to git commit messages unless explicitly asked for
+- when I explicitly ask in prompt to run a git command (ie: commit, push), do not prompt me again to ask if I allow to run command -- auto allow this
+- gh cli should be an allowed tool to be used to interact with pull requests
