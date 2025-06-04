@@ -18,6 +18,8 @@ ln -sf "$HOME_DIR/.ssh/config" ~/.ssh/config
 ln -sfn "$HOME_DIR/.zfunc" ~/.zfunc
 
 # symlinked files
+ln -sf "$HOME_DIR/.claude" ~/.claude
+ln -sf "$HOME_DIR/.claude.json" ~/.claude.json
 ln -sf "$HOME_DIR/.gitconfig" ~/.gitconfig
 ln -sf "$HOME_DIR/.gitignore" ~/.gitignore
 ln -sf "$HOME_DIR/.p10k.zsh" ~/.p10k.zsh
