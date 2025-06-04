@@ -256,19 +256,31 @@
                    :rules
                    [;
                      :movement_mode
+                     ; Regular scroll mode
                      [:##s
                       ["enable_mouse_motion_to_scroll" 1]
                       nil
                       {:afterup ["enable_mouse_motion_to_scroll" 0]}]
+                     ; Ctrl scroll mode  
+                     [:!Ts
+                      ["ctrl_mouse_scroll_mode" 1]
+                      :movement_mode
+                      {:afterup ["ctrl_mouse_scroll_mode" 0]}]
                      ;
                      ]}
 
                   {:des "mouse_motion_to_scroll"
                    :rules
                    [{;
-                      :type    :mouse_motion_to_scroll
-                      :from    {:modifiers {:mandatory [:fn]}}
-                      :options {:momentum_scroll_enabled true}
+                      :type       :mouse_motion_to_scroll
+                      :conditions [["enable_mouse_motion_to_scroll" 1]]
+                      :options    {:momentum_scroll_enabled true}
+                      ;
+                      }
+                     {;
+                      :type       :mouse_motion_to_scroll  
+                      :conditions [["ctrl_mouse_scroll_mode" 1]]
+                      :options    {:momentum_scroll_enabled true}
                       ;
                       }]}
 

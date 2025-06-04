@@ -11,7 +11,14 @@
       "Bash(git commit:*)",
       "Bash(mkdir:*)",
       "Bash(cp:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(goku)",
+      "Bash(hs:*)",
+      "WebFetch(domain:www.hammerspoon.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebFetch(domain:www.google.com)",
+      "Bash(csrutil:*)"
     ],
     "deny": []
   }

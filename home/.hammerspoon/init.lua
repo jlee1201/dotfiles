@@ -46,10 +46,30 @@ dragOtherToScroll = hs.eventtap.new({ hs.eventtap.event.types.otherMouseDragged 
     oldmousepos = hs.mouse.absolutePosition()
     local dx = e:getProperty(hs.eventtap.event.properties['mouseEventDeltaX'])
     local dy = e:getProperty(hs.eventtap.event.properties['mouseEventDeltaY'])
-    local scroll = hs.eventtap.event.newScrollEvent({dx * scrollmult, dy * scrollmult},{},'pixel')
+    
+    -- Check both event flags and system modifiers
+    local eventFlags = e:getFlags()
+    local sysModifiers = hs.eventtap.checkKeyboardModifiers()
+    
+    print("Event flags:", hs.inspect(eventFlags))
+    print("System modifiers:", hs.inspect(sysModifiers))
+    
+    if eventFlags['ctrl'] or sysModifiers['ctrl'] then
+      print("Using ctrl modifier for scroll")
+      -- Try the standard {"ctrl"} format
+      local scroll = hs.eventtap.event.newScrollEvent({dx * scrollmult, dy * scrollmult}, {"ctrl"}, "pixel")
+      scroll:post()
+      print("Posted scroll event with ctrl modifier")
+    else
+      print("No ctrl modifier detected")
+      -- Regular scroll without modifiers
+      local scroll = hs.eventtap.event.newScrollEvent({dx * scrollmult, dy * scrollmult}, {}, "pixel")
+      scroll:post()
+      print("Posted regular scroll event")
+    end
     -- put the mouse back
     hs.mouse.absolutePosition(oldmousepos)
-    return true, {scroll}
+    return true
   else
     return false, {}
   end

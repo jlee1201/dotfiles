@@ -114,6 +114,9 @@ for file in ~/.zfunc/*;
     do autoload $file
 done
 
+# moved MISE COONFIG location so need this
+export GUSTO_MISE_ALLOW_IDIOMATIC_FILE_OVERRIDE=true
+
 # load .profile if it hasn't been loaded yet (make changes to this file)
 if [ -z "$DOT_PROFILE_LOADED" ]; then source ~/.profile; fi
 
