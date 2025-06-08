@@ -109,6 +109,8 @@ alias y="yarn --silent"
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+
+
 # autoload zfunc
 for file in ~/.zfunc/*;
     do autoload $file
@@ -119,4 +121,12 @@ export GUSTO_MISE_ALLOW_IDIOMATIC_FILE_OVERRIDE=true
 
 # load .profile if it hasn't been loaded yet (make changes to this file)
 if [ -z "$DOT_PROFILE_LOADED" ]; then source ~/.profile; fi
+
+
+# AsyncAPI CLI Autocomplete
+
+ASYNCAPI_AC_ZSH_SETUP_PATH=/Users/john.lee/Library/Caches/@asyncapi/cli/autocomplete/zsh_setup && test -f $ASYNCAPI_AC_ZSH_SETUP_PATH && source $ASYNCAPI_AC_ZSH_SETUP_PATH; # asyncapi autocomplete setup
+
+
+
 
