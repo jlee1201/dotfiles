@@ -261,7 +261,7 @@
                       ["enable_mouse_motion_to_scroll" 1]
                       nil
                       {:afterup ["enable_mouse_motion_to_scroll" 0]}]
-                     ; Ctrl scroll mode  
+                     ; Ctrl scroll mode
                      [:!Ts
                       ["ctrl_mouse_scroll_mode" 1]
                       :movement_mode
@@ -278,7 +278,7 @@
                       ;
                       }
                      {;
-                      :type       :mouse_motion_to_scroll  
+                      :type       :mouse_motion_to_scroll
                       :conditions [["ctrl_mouse_scroll_mode" 1]]
                       :options    {:momentum_scroll_enabled true}
                       ;

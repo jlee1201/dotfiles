@@ -3,7 +3,7 @@
 	email = jlee1201@users.noreply.github.com
 [core]
 	autocrlf = input
-	excludesfile = /Users/john.lee/.gitignore_global
+	excludesfile = /Users/john.lee/.gitignore
 [filter "lfs"]
 	process = git-lfs filter-process
 	required = true
