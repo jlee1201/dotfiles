@@ -1,8 +1,18 @@
 # Dynamic theme switching for Cursor vs normal terminal usage
-# Detect if we're in a Cursor execution context
+# Manual override: set FORCE_P10K=1 to always use Powerlevel10k
+# or set FORCE_ROBBYRUSSELL=1 to always use robbyrussell
 CURSOR_CONTEXT=""
-if [[ -n "$CURSOR_SESSION" ]] || [[ -n "$VSCODE_INJECTION" ]] || [[ "$TERM_PROGRAM" == "cursor" ]] || [[ "$TERM_PROGRAM" == "vscode" ]] || pgrep -f "cursor" >/dev/null 2>&1; then
+
+if [[ "$FORCE_P10K" == "1" ]]; then
+    CURSOR_CONTEXT=""
+elif [[ "$FORCE_ROBBYRUSSELL" == "1" ]]; then
     CURSOR_CONTEXT="true"
+else
+    # Auto-detect Cursor/VSCode integrated terminal context
+    # Only trigger for actual integrated terminal, not regular terminals with TERM_PROGRAM=vscode
+    if [[ -n "$CURSOR_SESSION" ]] || [[ -n "$VSCODE_INJECTION" ]] || [[ "$TERM_PROGRAM" == "cursor" ]] || [[ -n "$CURSOR_TRACE_ID" ]]; then
+        CURSOR_CONTEXT="true"
+    fi
 fi
 
 # Path to your oh-my-zsh installation.
@@ -129,6 +139,12 @@ switch_to_p10k() {
     [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
     echo "Switched to Powerlevel10k theme"
 }
+
+# Theme control aliases
+alias use_p10k='export FORCE_P10K=1 && unset FORCE_ROBBYRUSSELL && source ~/.zshrc'
+alias use_robbyrussell='export FORCE_ROBBYRUSSELL=1 && unset FORCE_P10K && source ~/.zshrc'
+alias theme_auto='unset FORCE_P10K FORCE_ROBBYRUSSELL && source ~/.zshrc'
+alias theme_status='echo "Theme: $ZSH_THEME | Cursor context: $CURSOR_CONTEXT | Force P10K: $FORCE_P10K | Force Robbyrussell: $FORCE_ROBBYRUSSELL"'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 # Only load p10k config when using Powerlevel10k theme
