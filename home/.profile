@@ -6,3 +6,5 @@ eval "$(mise activate zsh --shims)"
 export PATH="$PATH:$HOME/Library/Python/3.8/bin:/Applications/IntelliJ IDEA.app/Contents/MacOS"
 
 source ~/.gusto/init.sh
+
+. "$HOME/.local/bin/env"
