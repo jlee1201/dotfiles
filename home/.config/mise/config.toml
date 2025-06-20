@@ -2,6 +2,7 @@
 # give some default global versions
 ruby = "latest"
 node = "22.14.0"
+uv = "latest"
 
 [settings]
 # should we just add all of the supported ones?

@@ -17,3 +17,4 @@
 	rebase = true
 [maintenance]
 	repo = /Users/john.lee/workspace/zenpayroll
+	repo = /Users/john.lee/workspace/taxcred-monorepo/external/zenpayroll
