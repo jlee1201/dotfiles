@@ -22,10 +22,12 @@ export ZSH="/Users/john.lee/.oh-my-zsh"
 if [[ -n "$CURSOR_CONTEXT" ]]; then
     # Use robbyrussell theme when in Cursor context
     ZSH_THEME="robbyrussell"
+    # Set pager to cat for non-interactive output in AI commands
+    export PAGER=cat
 else
     # Use Powerlevel10k for normal terminal usage
     ZSH_THEME="powerlevel10k/powerlevel10k"
-
+    
     # Enable Powerlevel10k instant prompt only when using p10k theme
     # Initialization code that may require console input (password prompts, [y/n]
     # confirmations, etc.) must go above this block; everything else may go below.
