@@ -17,6 +17,7 @@ Personal dotfiles repository for macOS development environment.
 - **Runtime Management**: mise (replacing nvm, rbenv, etc.)
 - **Package Management**: yarn (auto-installed with new Node versions)
 - **Keyboard Customization**: Karabiner-Elements with goku (.edn compilation)
+- **System Automation**: Hammerspoon for advanced input handling and system control
 
 ## Recent Updates
 
@@ -32,6 +33,22 @@ Personal dotfiles repository for macOS development environment.
   - `theme_auto` - Return to automatic detection
   - `theme_status` - Check current theme settings
 - **Implementation**: Modified `~/.zshrc` with context detection logic
+
+### Enhanced Scrolling System (2025)
+- **Feature**: Hammerspoon-based trackpad scrolling with modifier key support
+- **Trigger**: `fn + s + trackpad drag` for smooth, responsive scrolling
+- **Modifier Support**:
+  - `cmd + fn + s + trackpad` → zoom in/out (Figma, design apps)
+  - `ctrl + fn + s + trackpad` → zoom in browsers and other apps
+  - `option/shift + fn + s + trackpad` → horizontal scroll or app-specific functions
+- **Implementation**: 
+  - Replaces problematic Karabiner-Elements `mouse_motion_to_scroll` 
+  - Uses Hammerspoon event taps for reliable middle mouse button emulation
+  - Maintains dependency: Hammerspoon required for Karabiner multitouch extension
+- **Key Learnings**:
+  - Karabiner-Elements `mouse_motion_to_scroll` was unreliable and couldn't handle modifiers properly
+  - Hammerspoon provides more control over scroll event generation and modifier detection
+  - Momentum scrolling proved challenging due to difficulty detecting "finger lifted from trackpad" events
 
 ## Scripts
 
