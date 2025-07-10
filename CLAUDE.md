@@ -93,57 +93,57 @@ This is a personal dotfiles repository containing configuration files and setup 
 
 ## Troubleshooting Notes
 
-### Ctrl+Scroll Zoom with Mouse Motion (UNSOLVED - 2025-06-03)
+### Enhanced Scrolling System (SOLVED - 2025-01-02)
 
-**Goal**: Enable `fn + ctrl + s + mouse drag` to produce ctrl+scroll zoom behavior (like trackpad two-finger scroll with ctrl held).
+**Goal**: Enable `fn + s + trackpad drag` for smooth scrolling with modifier key support (cmd+scroll for zoom, etc.).
 
-**Current Status**: 
-- ✅ `fn + s + mouse drag` = regular scrolling (works perfectly)
-- ❌ `fn + ctrl + s + mouse drag` = should zoom but only produces regular scroll
+**Final Solution**: 
+- ✅ `fn + s + trackpad drag` = smooth, responsive scrolling
+- ✅ `cmd + fn + s + trackpad drag` = zoom in/out in Figma and design apps
+- ✅ `ctrl + fn + s + trackpad drag` = zoom in browsers and other apps
+- ✅ All modifier combinations work properly
+
+**Key Architecture Decision**: 
+- **Abandoned**: Karabiner-Elements `mouse_motion_to_scroll` approach (unreliable, no modifier support)
+- **Adopted**: Hammerspoon-based middle mouse button emulation with modifier detection
 
 **What Works**:
-- Karabiner successfully detects the key combinations and sets appropriate variables
-- Hammerspoon correctly detects the ctrl modifier in event flags (`{ctrl = true}`)
-- Regular mouse-drag-to-scroll functionality works via middle mouse button emulation
-- All system permissions are properly configured (Accessibility, Input Monitoring)
+- Karabiner maps `fn + s` to middle mouse button (button 2)
+- Hammerspoon intercepts middle mouse button drag events
+- Hammerspoon detects modifier keys and passes them to scroll events
+- Applications receive proper scroll events with modifiers and respond correctly
 
-**Technical Details**:
-- Karabiner config: `[:!Ts ["ctrl_mouse_scroll_mode" 1] :movement_mode]` in modifier remapping
-- Hammerspoon detects modifiers: Event flags show `{ctrl = true}`, system modifiers often empty
-- Applications correctly respond to real trackpad ctrl+scroll for zoom
+**Technical Implementation**:
+- Karabiner config: `[:##s :button3]` in movement_mode (maps to middle mouse button)
+- Hammerspoon: Event taps on `otherMouseDown`, `otherMouseUp`, `otherMouseDragged`
+- Modifier detection: Both `eventFlags` and `checkKeyboardModifiers()` for reliability
+- Scroll generation: `newScrollEvent({dx, dy}, modifiers, "pixel")`
 
-**Failed Approaches Tried**:
-1. **Karabiner mouse_motion_to_scroll with modifiers** - Karabiner cannot inject modifiers into generated scroll events
-2. **Hammerspoon newScrollEvent with various modifier formats**:
-   - `{"ctrl"}`, `{"^"}`, `{"control"}`, `{"⌃"}`
-   - `{ctrl=true}`, `{control=true}`
-   - Using event flags directly, system modifiers
-   - Both "pixel" and "line" units
-3. **Hammerspoon scrollWheel with modifiers** - Same issue as newScrollEvent
-4. **Manual ctrl key down/up sequences** - Fundamentally incorrect approach
-5. **Setting flags manually with setFlags()** - No effect
-6. **Middle mouse button emulation with ctrl** - Ctrl modifier not passed through to scroll events
+**Critical Dependencies**:
+- Hammerspoon must be running for Karabiner's `multitouch_extension_finger_count_total` to work
+- Without Hammerspoon: trackpad finger count detection fails, movement_mode doesn't activate
 
-**Key Insight**: Applications can distinguish between synthetic scroll events and real trackpad events. Real ctrl+trackpad scroll produces zoom, but synthetic ctrl+scroll events (even with proper modifiers) are treated as regular scroll.
+**Failed Approaches**:
+1. **Karabiner mouse_motion_to_scroll** - Unreliable, couldn't detect conditions properly, no modifier support
+2. **Various momentum implementations**:
+   - Momentum on mouse button release (wrong trigger - should be finger lift)
+   - Velocity tracking during drag (made scrolling choppy)
+   - Timer-based gesture end detection (never triggered properly)
+   - Multiple decay algorithms (none felt natural)
+
+**Key Learnings**:
+- Karabiner-Elements `mouse_motion_to_scroll` is fundamentally limited for complex scenarios
+- Hammerspoon provides much better control over event generation and modifier handling
+- Momentum scrolling detection requires identifying "finger lifted from trackpad" while maintaining button press
+- Simple, responsive immediate scrolling often better than complex momentum systems
+- Modifier key detection needs dual approach (event flags + system modifiers) for reliability
 
 **System Configuration**:
 - macOS with SIP enabled
 - Hammerspoon has Accessibility and Input Monitoring permissions
 - Karabiner-Elements with goku for .edn compilation
-- Working Hammerspoon middle-mouse-button scroll implementation
-
-**Possible Root Causes**:
-- macOS security restrictions on synthetic events with modifiers
-- Different event pathway for trackpad vs synthetic scroll events
-- Application-specific handling that ignores synthetic ctrl+scroll
-- Fundamental limitation in Hammerspoon's scroll event generation
+- Interdependent: Hammerspoon + Karabiner both required
 
 **Files Modified**:
-- `home/.config/karabiner.edn` - Various mouse_motion_to_scroll configurations
-- `home/.hammerspoon/init.lua` - Extensive scroll event generation attempts
-
-**Future Investigation Ideas**:
-- Try different automation tools (AppleScript, other event injectors)
-- Investigate if any apps respond to synthetic ctrl+scroll
-- Research macOS scroll event internals and required attributes
-- Consider if other modifier combinations work (cmd+scroll, option+scroll)
+- `home/.config/karabiner.edn` - Removed mouse_motion_to_scroll, kept movement_mode
+- `home/.hammerspoon/init.lua` - Complete middle mouse button scroll implementation
