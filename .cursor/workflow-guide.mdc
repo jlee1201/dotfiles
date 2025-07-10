@@ -1,0 +1,54 @@
+# Working with this Repository
+
+## Making Changes
+
+1. **Edit files directly in this repository**, not the symlinked versions
+2. **All changes should be committed to this repository**
+3. **Run tests/updates after changes** (see below)
+
+## Adding New Configuration
+
+### Easy Way (Recommended)
+Use `./scripts/add_to_dotfiles.sh ~/filename` to automatically:
+- Add a file or directory to dotfiles management
+- Move the file/directory to the dotfiles repository  
+- Create a symlink in the original location
+- Update `create_symlinks.sh` script with the new symlink entry
+
+### Manual Way
+1. Add new files to the appropriate location in this repository
+2. Update `create_symlinks.sh` to create the required symlinks
+3. Test with `./scripts/create_symlinks.sh`
+
+### Bulk ~/.config Management
+Use `./scripts/scan_config.sh` for interactive processing of multiple config files
+
+## Testing Changes
+
+**After making changes**:
+1. Run `./scripts/create_symlinks.sh` to update symlinks
+2. **For Karabiner changes**: Run `goku` to compile `.edn` → `.json`, then reload Karabiner-Elements
+3. **For Hammerspoon changes**: Reload Hammerspoon (auto-reload is configured via ReloadConfiguration spoon)
+
+## Git Workflow
+
+**Standard workflow**:
+```bash
+# Make changes to files in repository
+git add .
+git commit -m "Description of changes"
+git push
+```
+
+**Security Considerations**:
+- Be careful with `gh_query.sh` as it contains a GitHub token
+- Consider moving sensitive tokens to a secure location
+- Review changes before committing to avoid exposing secrets
+
+## Environment Setup
+
+**Initial setup on new machine**:
+1. Clone repository: `git clone git@github.com:jlee1201/dotfiles.git ~/dotfiles`
+2. Run setup: `cd ~/dotfiles && ./scripts/create_symlinks.sh`
+3. Install dependencies (Oh-My-ZSH, Karabiner-Elements, Hammerspoon, mise)
+4. Configure system permissions (Accessibility, Input Monitoring for Hammerspoon)
