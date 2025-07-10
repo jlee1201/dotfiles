@@ -79,4 +79,11 @@ cd ~/dotfiles
 ./scripts/scan_config.sh
 ```
 
-See [CLAUDE.md](CLAUDE.md) for detailed documentation and troubleshooting notes. 
+## Documentation
+
+See [.cursor/README.md](.cursor/README.md) for detailed documentation:
+- [Repository Overview](.cursor/repository-overview.mdc)
+- [Scripts & Commands](.cursor/scripts-and-commands.mdc)
+- [Workflow Guide](.cursor/workflow-guide.mdc)
+- [Troubleshooting](.cursor/troubleshooting.mdc)
+- [Architecture Decisions](.cursor/architecture-decisions.mdc) 

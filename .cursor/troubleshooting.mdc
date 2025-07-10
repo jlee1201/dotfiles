@@ -1,0 +1,56 @@
+# Troubleshooting Guide
+
+## Enhanced Scrolling System (SOLVED - 2025-01-02)
+
+### Problem
+Enable `fn + s + trackpad drag` for smooth scrolling with modifier key support (cmd+scroll for zoom, etc.).
+
+### Solution ✅
+- `fn + s + trackpad drag` = smooth, responsive scrolling
+- `cmd + fn + s + trackpad drag` = zoom in/out in Figma and design apps
+- `ctrl + fn + s + trackpad drag` = zoom in browsers and other apps
+- All modifier combinations work properly
+
+### Architecture Decision
+- **❌ Abandoned**: Karabiner-Elements `mouse_motion_to_scroll` approach (unreliable, no modifier support)
+- **✅ Adopted**: Hammerspoon-based middle mouse button emulation with modifier detection
+
+### Technical Implementation
+- **Karabiner config**: `[:##s :button3]` in movement_mode (maps to middle mouse button)
+- **Hammerspoon**: Event taps on `otherMouseDown`, `otherMouseUp`, `otherMouseDragged`
+- **Modifier detection**: Both `eventFlags` and `checkKeyboardModifiers()` for reliability
+- **Scroll generation**: `newScrollEvent({dx, dy}, modifiers, "pixel")`
+
+### Critical Dependencies
+- Hammerspoon must be running for Karabiner's `multitouch_extension_finger_count_total` to work
+- Without Hammerspoon: trackpad finger count detection fails, movement_mode doesn't activate
+
+### System Requirements
+- macOS with SIP enabled
+- Hammerspoon has Accessibility and Input Monitoring permissions
+- Karabiner-Elements with goku for .edn compilation
+- Both Hammerspoon + Karabiner are required (interdependent)
+
+### Files Modified
+- `home/.config/karabiner.edn` - Removed mouse_motion_to_scroll, kept movement_mode
+- `home/.hammerspoon/init.lua` - Complete middle mouse button scroll implementation
+
+## Common Issues
+
+### Karabiner Changes Not Working
+1. **Problem**: Configuration changes not taking effect
+2. **Solution**: Run `goku` to compile `.edn` → `.json`, then reload Karabiner-Elements
+
+### Hammerspoon Permissions
+1. **Problem**: Scrolling or automation not working
+2. **Solution**: Check System Settings → Privacy & Security → Accessibility and Input Monitoring
+3. **Required**: Both permissions must be enabled for Hammerspoon
+
+### Symlink Issues
+1. **Problem**: Configuration files not updating
+2. **Solution**: Re-run `./scripts/create_symlinks.sh` to refresh all symlinks
+
+### Shell Theme Issues
+1. **Problem**: Prompt not displaying correctly
+2. **Context**: Dynamic theme switching based on Cursor AI execution
+3. **Commands**: `use_p10k`, `use_robbyrussell`, `theme_auto`, `theme_status`

@@ -1,0 +1,33 @@
+# Repository Overview
+
+This is a personal dotfiles repository containing configuration files and setup scripts for a macOS development environment.
+
+## Tech Stack & Dependencies
+
+- **Shell**: ZSH with Oh-My-ZSH and Powerlevel10k theme
+- **Runtime Management**: mise (replacing nvm, rbenv, etc.)
+- **Package Management**: yarn (auto-installed with new Node versions) 
+- **Keyboard Customization**: Karabiner-Elements with goku (.edn compilation)
+- **System Automation**: Hammerspoon for advanced input handling and system control
+
+### Key Dependencies
+- [Oh-My-ZSH](https://ohmyz.sh/)
+- [Powerlevel10k](https://github.com/romkatv/powerlevel10k)
+- [Karabiner-Elements](https://karabiner-elements.pqrs.org/)
+- [Hammerspoon](https://www.hammerspoon.org/)
+- [mise](https://github.com/jdx/mise) (runtime version manager)
+
+## Repository Structure
+
+- `/scripts/`: Utility scripts for environment setup
+- `/home/`: Dotfiles and configuration files that get symlinked to home directory
+- `/home/.config/`: Configuration files for various applications
+- `/home/.hammerspoon/`: Hammerspoon automation scripts
+- `/.cursor/`: Documentation for agentic sessions
+
+## Critical Dependencies
+
+**Karabiner ↔ Hammerspoon Interdependency**: 
+- Hammerspoon must be running for Karabiner's `multitouch_extension_finger_count_total` to work
+- Without Hammerspoon: trackpad finger count detection fails, movement_mode doesn't activate
+- This is required for the enhanced scrolling system to function properly

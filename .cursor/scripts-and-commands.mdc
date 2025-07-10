@@ -1,0 +1,46 @@
+# Key Scripts and Commands
+
+## Primary Setup Command
+
+**Setting up dotfiles**: `./scripts/create_symlinks.sh`
+- Creates symbolic links from the dotfiles in this repository to the home directory
+- This is the primary setup command for this repository
+
+## Dotfiles Management
+
+**Adding individual files/directories**: `./scripts/add_to_dotfiles.sh ~/filename`
+- Adds a specific file or directory from the home directory to dotfiles management
+- Automatically moves the file/directory to the dotfiles repository and creates a symlink
+- Handles files, directories, and existing symlinks properly
+- Updates the `create_symlinks.sh` script with the new symlink entry
+- Examples: 
+  - `./scripts/add_to_dotfiles.sh ~/.vimrc`
+  - `./scripts/add_to_dotfiles.sh ~/.local`
+
+**Bulk config management**: `./scripts/scan_config.sh`
+- Interactive script that scans ~/.config directory for files/directories
+- Prompts user to add each item to dotfiles management
+- Useful for bulk configuration management
+
+## System Configuration
+
+**Keyboard repeat rate**: `./scripts/keyboard_repeat_rate.sh`
+- Sets macOS keyboard repeat settings (requires re-login to take effect)
+
+**Karabiner config compilation**: `goku`
+- **Important**: Any change to `karabiner.edn` requires running `goku` to update the `karabiner.json` file
+- This is what Karabiner-Elements ultimately reads
+
+## Development Tools
+
+**GitHub API queries**: `./scripts/gh_query.sh [repo_owner] [repo_name]`
+- Queries GitHub API for open pull requests in the specified repository
+- Default: `ardiustech/mithrin`
+- **Security Note**: Contains a GitHub token - be careful with this script
+
+## Workflow Commands
+
+**Testing changes**:
+1. After making changes, run `./scripts/create_symlinks.sh` to update symlinks
+2. For Karabiner changes, run `goku` and reload Karabiner-Elements
+3. For Hammerspoon changes, reload Hammerspoon (auto-reload is configured)

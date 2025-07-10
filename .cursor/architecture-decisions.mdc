@@ -1,0 +1,85 @@
+# Architecture Decisions & Key Learnings
+
+## Scrolling System Architecture
+
+### Decision: Hammerspoon over Karabiner-Elements for Scrolling
+
+**Context**: Needed smooth trackpad scrolling with modifier key support (`fn + s + trackpad drag`)
+
+**Options Evaluated**:
+1. **Karabiner-Elements `mouse_motion_to_scroll`**
+2. **Hammerspoon event taps with middle mouse button emulation**
+
+**Decision**: Chose Hammerspoon approach
+
+**Rationale**:
+- Karabiner `mouse_motion_to_scroll` was unreliable and couldn't detect conditions properly
+- No modifier support in Karabiner's scroll generation
+- Hammerspoon provides superior control over event generation and modifier handling
+- Better debugging capabilities with Hammerspoon console
+
+### Decision: Interdependent Hammerspoon + Karabiner Architecture
+
+**Context**: Both tools needed for complete functionality
+
+**Decision**: Accept interdependency rather than consolidating to one tool
+
+**Rationale**:
+- Karabiner excels at keyboard remapping and key combinations
+- Hammerspoon excels at complex event handling and system automation
+- Karabiner's `multitouch_extension_finger_count_total` requires Hammerspoon to be running
+- Each tool handles what it does best
+
+## Failed Approaches & Learnings
+
+### Momentum Scrolling Attempts
+
+**Approaches Tried**:
+1. **Momentum on mouse button release** 
+   - Issue: Wrong trigger (should be finger lift from trackpad, not key release)
+2. **Velocity tracking during drag**
+   - Issue: Made scrolling choppy and unresponsive
+3. **Timer-based gesture end detection (50ms timeout)**
+   - Issue: Never triggered properly
+4. **Multiple decay algorithms**
+   - Issue: None felt natural
+
+**Key Learning**: Momentum scrolling detection requires identifying "finger lifted from trackpad" while maintaining button press - very difficult with current event handling approach.
+
+**Decision**: Focus on responsive immediate scrolling without momentum
+
+### Modifier Key Detection
+
+**Learning**: Dual approach required for reliability
+- Use both `eventFlags` and `checkKeyboardModifiers()`
+- Applications can distinguish between synthetic scroll events and real trackpad events
+- Proper modifier passing is critical for zoom functionality
+
+## Technical Patterns Established
+
+### Configuration Compilation Pattern
+- Karabiner uses `.edn` → `goku` → `.json` compilation pipeline
+- Always run `goku` after `.edn` changes
+- Enables more readable/maintainable configuration syntax
+
+### Event Handling Pattern
+- Use Hammerspoon for complex event manipulation
+- Use Karabiner for straightforward key remapping
+- Leverage each tool's strengths rather than forcing one solution
+
+### System Permissions Pattern
+- Both Accessibility and Input Monitoring required for Hammerspoon
+- Document permission requirements clearly
+- Test functionality after permission changes
+
+## Future Considerations
+
+### Momentum Scrolling
+- May require different event handling approach
+- Consider investigating macOS scroll event internals
+- Alternative: Accept that immediate scrolling is sufficient
+
+### Tool Consolidation
+- Current interdependency works but adds complexity
+- Monitor for opportunities to simplify while maintaining functionality
+- Document dependencies clearly for troubleshooting
