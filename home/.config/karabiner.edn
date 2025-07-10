@@ -255,34 +255,12 @@
                   {:des "modifier remapping"
                    :rules
                    [;
-                     :movement_mode
-                     ; Regular scroll mode
-                     [:##s
-                      ["enable_mouse_motion_to_scroll" 1]
-                      nil
-                      {:afterup ["enable_mouse_motion_to_scroll" 0]}]
-                     ; Ctrl scroll mode
-                     [:!Ts
-                      ["ctrl_mouse_scroll_mode" 1]
-                      :movement_mode
-                      {:afterup ["ctrl_mouse_scroll_mode" 0]}]
+                     ; Scrolling now handled by Hammerspoon instead of Karabiner
+                     ; No scroll mode variables needed
                      ;
                      ]}
 
-                  {:des "mouse_motion_to_scroll"
-                   :rules
-                   [{;
-                      :type       :mouse_motion_to_scroll
-                      :conditions [["enable_mouse_motion_to_scroll" 1]]
-                      :options    {:momentum_scroll_enabled true}
-                      ;
-                      }
-                     {;
-                      :type       :mouse_motion_to_scroll
-                      :conditions [["ctrl_mouse_scroll_mode" 1]]
-                      :options    {:momentum_scroll_enabled true}
-                      ;
-                      }]}
+                  ; mouse_motion_to_scroll removed - now handled by Hammerspoon
 
                   {:des "non-terminals"
                    :rules
