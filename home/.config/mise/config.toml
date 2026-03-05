@@ -1,8 +1,11 @@
 [tools]
 # give some default global versions
-ruby = "latest"
+ruby = "3.3.5"
 node = "22.14.0"
 uv = "latest"
+gcloud = "latest"
+gam = "latest"
+go = "latest"
 
 [settings]
 # should we just add all of the supported ones?
