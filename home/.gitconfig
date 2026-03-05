@@ -1,9 +1,12 @@
 [user]
 	name = John Lee
 	email = jlee1201@users.noreply.github.com
+	signingkey = /Users/john.lee/.ssh/id_ed25519.pub
 [core]
 	autocrlf = input
 	excludesfile = /Users/john.lee/.gitignore
+	fsmonitor = true
+	untrackedCache = true
 [filter "lfs"]
 	process = git-lfs filter-process
 	required = true
@@ -11,6 +14,8 @@
 	smudge = git-lfs smudge -- %f
 [rebase]
 	autoStash = true
+	updateRefs = true
+	autoSquash = true
 [credential]
 	helper = osxkeychain
 [pull]
@@ -18,3 +23,33 @@
 [maintenance]
 	repo = /Users/john.lee/workspace/zenpayroll
 	repo = /Users/john.lee/workspace/taxcred-monorepo/external/zenpayroll
+	repo = /Users/john.lee/workspace/eng_ai_assistant/repos/zenpayroll/code/main
+	repo = /Users/john.lee/workspace/eng_ai_assistant/repos/taxcred-monorepo/zenpayroll/code/zenpayroll
+	repo = /Users/john.lee/workspace/eng_ai_assistant/repos/taxcred/web/code/web
+[commit]
+	gpgsign = true
+	verbose = true
+[gpg]
+	format = ssh
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[tag]
+	sort = version:refname
+[diff]
+	algorithm = histogram
+	colorMoved = plain
+	renames = true
+	mnemonicPrefix = true
+[push]
+	autoSetupRemote = true
+	followTags = true
+[fetch]
+	prune = true
+	pruneTags = true
+	all = true
+[init]
+	defaultBranch = main
+[help]
+	autocorrect = prompt

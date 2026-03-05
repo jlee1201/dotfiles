@@ -84,6 +84,10 @@
                                    "com.microsoft.edgemac"
                                    ;
                                    ]
+                  :thorium_app    [;
+                                    "org.chromium.Thorium"
+                                   ;
+                                   ]
                   :cursor_app     [;
                                     "com.todesktop.230313mzl4w4u92"
                                     ;
@@ -280,10 +284,11 @@
                      ;
                      ]}
 
-                  {:des   "Remap Ctrl+Tab to Ctrl+` - previous tab in edge"
+                  {:des   "Remap Ctrl+Tab to Ctrl+` - previous tab in edge / thorium"
                    :rules [;
                             [:!Ttab :!Tgrave_accent_and_tilde :edge_app]
                             [:tab :!Tgrave_accent_and_tilde [:edge_app :movement_mode]]
+                            [:tab :!Tq [:thorium_app :movement_mode]]
                             ;
                             ]
                    ;

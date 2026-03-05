@@ -8,3 +8,4 @@ export PATH="$PATH:$HOME/Library/Python/3.8/bin:/Applications/IntelliJ IDEA.app/
 source ~/.gusto/init.sh
 
 . "$HOME/.local/bin/env"
+export PATH=$PATH:$HOME/.maestro/bin

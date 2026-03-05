@@ -10,7 +10,7 @@ elif [[ "$FORCE_ROBBYRUSSELL" == "1" ]]; then
 else
     # Auto-detect Cursor/VSCode integrated terminal context
     # Only trigger for actual integrated terminal, not regular terminals with TERM_PROGRAM=vscode
-    if [[ -n "$CURSOR_SESSION" ]] || [[ -n "$VSCODE_INJECTION" ]] || [[ "$TERM_PROGRAM" == "cursor" ]] || [[ -n "$CURSOR_TRACE_ID" ]]; then
+    if [[ -n "$CURSOR_AGENT" ]] || [[ -n "$CURSOR_SESSION" ]] || [[ -n "$VSCODE_INJECTION" ]] || [[ "$TERM_PROGRAM" == "cursor" ]] || [[ -n "$CURSOR_TRACE_ID" ]]; then
         CURSOR_CONTEXT="true"
     fi
 fi
@@ -27,7 +27,7 @@ if [[ -n "$CURSOR_CONTEXT" ]]; then
 else
     # Use Powerlevel10k for normal terminal usage
     ZSH_THEME="powerlevel10k/powerlevel10k"
-    
+
     # Enable Powerlevel10k instant prompt only when using p10k theme
     # Initialization code that may require console input (password prompts, [y/n]
     # confirmations, etc.) must go above this block; everything else may go below.
@@ -175,3 +175,16 @@ ASYNCAPI_AC_ZSH_SETUP_PATH=/Users/john.lee/Library/Caches/@asyncapi/cli/autocomp
 
 
 
+export PATH=$PATH:$HOME/.maestro/bin
+
+# Microsoft Edge with remote debugging enabled for automation
+alias edge='/Applications/Microsoft\ Edge.app/Contents/MacOS/Microsoft\ Edge --remote-debugging-port=9222'
+alias edge-debug='edge'
+
+# Function to start Edge with debugging and open a URL
+edge-open() {
+    /Applications/Microsoft\ Edge.app/Contents/MacOS/Microsoft\ Edge --remote-debugging-port=9222 "$@" &
+}
+
+# Remove gam alias from oh-my-zsh git plugin (conflicts with GAM - Google Admin Manager)
+unalias gam 2>/dev/null

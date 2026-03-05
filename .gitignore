@@ -1,4 +1,6 @@
 .idea
+.DS_Store
+.specstory/
 .config/github-copilot
 .config/raycast/extensions
 .config/karabiner/
