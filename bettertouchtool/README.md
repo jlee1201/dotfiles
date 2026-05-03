@@ -64,6 +64,33 @@ These fields change every BTT launch but aren't meaningful config. The script re
 
 If you find other noisy fields in future diffs (i.e. they change without any meaningful config change on your part), add them to the `del(...)` chain in `normalize.sh`.
 
+## License recovery
+
+The license file (`bettertouchtool.bttlicense`) is **NOT** in this repo (this repo is public, and the license is a credential).
+
+**Primary recovery path — 1Password:**
+
+- Vault: `Private`
+- Item title: `BetterTouchTool License`
+- Category: Software License
+- Both `.bttlicense` files (`bettertouchtool.bttlicense` and `urlimported.bttlicense`) are attached as files
+- Structured fields include: registered email, license type, order number, transaction id, purchase timestamp, recovery URL
+
+**To restore the license on a new machine:**
+
+1. Open 1Password, navigate to `Private` → `BetterTouchTool License`
+2. Download both attached files
+3. Move them to `~/Library/Application Support/BetterTouchTool/` (create the directory if BTT hasn't run yet)
+4. Restart BTT — license should activate automatically
+
+**Fallback recovery path — BTT support:**
+
+If the 1Password item is unavailable for any reason:
+
+1. Visit https://folivora.ai/lostlicense
+2. Enter the registered email (also stored in the 1Password item, or check your purchase email)
+3. BTT will email a re-activation link
+
 ## What's NOT tracked here
 
 These live in `~/Library/Application Support/BetterTouchTool/` and intentionally stay there:
@@ -72,7 +99,7 @@ These live in `~/Library/Application Support/BetterTouchTool/` and intentionally
 - `btt_data_store.version_*-wal` / `-shm` — SQLite sidecars
 - `Backups/` — BTT's own automatic backup snapshots (keep enabled in BTT settings as a separate disaster-recovery layer)
 - `Logs/` — runtime logs
-- `bettertouchtool.bttlicense` — license file (do not commit)
+- `bettertouchtool.bttlicense` / `urlimported.bttlicense` — license files (in 1Password instead, see above)
 - `Files/` — supporting files referenced by triggers (script files, images, etc.) — TODO: revisit if specific triggers need files committed
 
 ## Optional: further automation
