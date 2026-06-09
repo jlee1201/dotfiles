@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# oldmac -- coordinate with / message the OLD Mac from ANY workspace and ANY agent.
+# Thin, agent-neutral launcher over the durable git-synced mailbox in ~/mac-migration/coord.
+# Works from any directory. Engine: coord.sh (+ _coord.py). Transport: git (primary) + LAN SSH.
+#   oldmac              # show the guide (great for first discovery)
+#   oldmac inbox        # open items addressed to this Mac
+#   oldmac send old question "ask the old Mac something"
+#   oldmac tasks        # migration checklist   (full command list: oldmac guide)
+set -uo pipefail
+COORD_DIR="${OLDMAC_COORD_DIR:-$HOME/mac-migration/coord}"
+COORD="$COORD_DIR/coord.sh"
+GUIDE="$COORD_DIR/AGENT-GUIDE.md"
+
+if [ ! -x "$COORD" ]; then
+  echo "oldmac: coordination engine not found at $COORD" >&2
+  echo "  The old-Mac channel lives in ~/mac-migration (git-synced). Is that repo present?" >&2
+  echo "  (override its location with OLDMAC_COORD_DIR=/path/to/coord)" >&2
+  exit 1
+fi
+
+case "${1:-guide}" in
+  guide|--guide|-h|--help|help)
+    if [ -f "$GUIDE" ]; then cat "$GUIDE"; else "$COORD" help; fi
+    ;;
+  *)
+    exec "$COORD" "$@"
+    ;;
+esac
