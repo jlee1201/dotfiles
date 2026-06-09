@@ -5,6 +5,7 @@
 #   oldmac              # show the guide (great for first discovery)
 #   oldmac inbox        # open items addressed to this Mac
 #   oldmac send old question "ask the old Mac something"
+#   oldmac listen [sec] # live listener: prints [NEW FROM OLD] / [SSH-UP] / [SSH-DOWN]
 #   oldmac tasks        # migration checklist   (full command list: oldmac guide)
 set -uo pipefail
 COORD_DIR="${OLDMAC_COORD_DIR:-$HOME/mac-migration/coord}"
@@ -21,6 +22,14 @@ fi
 case "${1:-guide}" in
   guide|--guide|-h|--help|help)
     if [ -f "$GUIDE" ]; then cat "$GUIDE"; else "$COORD" help; fi
+    ;;
+  listen)
+    shift
+    if [ -x "$COORD_DIR/listen.sh" ]; then
+      exec "$COORD_DIR/listen.sh" "$@"
+    else
+      echo "oldmac: listener not found at $COORD_DIR/listen.sh" >&2; exit 1
+    fi
     ;;
   *)
     exec "$COORD" "$@"
