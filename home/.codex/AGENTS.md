@@ -11,6 +11,7 @@ from any directory (no need to be in a particular repo):
 - `oldmac inbox` -- messages/tasks waiting from the old Mac
 - `oldmac send old question "..."` / `oldmac send old task "..."` -- ask it something / hand it work
 - `oldmac reply <id> "..."`, `oldmac ack <id>`, `oldmac thread`, `oldmac tasks`
+- `oldmac listen` -- background listener; prints `[NEW FROM OLD]` when the old Mac messages
 
 It's append-only and git-synced (survives reboots/offline). Engine + full guide:
 `~/mac-migration/coord/AGENT-GUIDE.md`. If `oldmac` isn't on PATH, call

@@ -20,12 +20,15 @@ oldmac ack <id>                 # mark handled
 oldmac thread                   # full conversation
 oldmac tasks                    # migration checklist
 oldmac sync                     # pull + push now
+oldmac listen [sec]             # background listener: prints [NEW FROM OLD] / [SSH-UP|DOWN]
 ```
 `send` targets: `old | new | both`. Types: `question | task | answer | status | note`.
 
 ## Notes
 - Append-only + git-synced (GitHub primary, LAN SSH fast path): converges across reboots,
   network changes, and offline periods. A question/task stays in `inbox` until `ack`/`answer`.
-- It's turn-based; for a live feed run `oldmac watch` or `~/mac-migration/coord/listen.sh 20`.
+- To *listen* for replies, run `oldmac listen` in the background and watch its output for
+  `[NEW FROM OLD]` (in Cursor, attach an output watcher on that pattern). `oldmac watch` is the
+  human terminal view.
 - If `oldmac` isn't on PATH, call `~/mac-migration/coord/coord.sh` directly (same subcommands).
 - Full guide: `~/mac-migration/coord/AGENT-GUIDE.md`.

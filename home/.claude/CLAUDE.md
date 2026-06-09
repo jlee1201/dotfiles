@@ -6,4 +6,5 @@
 ## Coordinating with the old Mac (`oldmac`)
 - This machine was migrated from an OLD Mac that is still running (hosts the dealia bot) until it's decommissioned. A durable git-synced channel connects them.
 - To message/coordinate with the old Mac from any directory, use the `oldmac` CLI: `oldmac guide` (usage), `oldmac inbox` (read its messages), `oldmac send old question "..."` / `oldmac send old task "..."`, `oldmac reply <id> "..."`, `oldmac tasks`.
+- To *listen* for replies, run `oldmac listen` in the background and watch its output for `[NEW FROM OLD]`.
 - Append-only + git-synced (works offline, syncs later). Full guide: `~/mac-migration/coord/AGENT-GUIDE.md`. If `oldmac` isn't on PATH, call `~/mac-migration/coord/coord.sh` directly.
