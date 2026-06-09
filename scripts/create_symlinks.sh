@@ -18,6 +18,11 @@ ln -sf "$HOME_DIR/.ssh/config" ~/.ssh/config
 ln -sfn "$HOME_DIR/.zfunc" ~/.zfunc
 
 # symlinked files
+# oldmac (old-Mac coordination): ensure parent dirs exist on fresh installs
+mkdir -p ~/.cursor/skills/oldmac-coord ~/.codex ~/.local/bin
+ln -sf "$HOME_DIR/.cursor/skills/oldmac-coord/SKILL.md" ~/.cursor/skills/oldmac-coord/SKILL.md
+ln -sf "$HOME_DIR/.codex/AGENTS.md" ~/.codex/AGENTS.md
+ln -sf "$HOME_DIR/.local/bin/oldmac" ~/.local/bin/oldmac
 ln -sf "$HOME_DIR/.claude" ~/.claude
 ln -sf "$HOME_DIR/.claude.json" ~/.claude.json
 ln -sf "$HOME_DIR/.gitconfig" ~/.gitconfig
