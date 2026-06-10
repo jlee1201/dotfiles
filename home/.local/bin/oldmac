@@ -5,7 +5,8 @@
 #   oldmac              # show the guide (great for first discovery)
 #   oldmac inbox        # open items addressed to this Mac
 #   oldmac send old question "ask the old Mac something"
-#   oldmac listen [sec] # live listener: prints [NEW FROM OLD] / [SSH-UP] / [SSH-DOWN]
+#   oldmac presence     # is each Mac attending the channel now? (ALIVE/STALE)
+#   oldmac listen [sec] # live listener: [NEW FROM OLD] / [SSH-UP|DOWN] / [OLD ALIVE|STALE]
 #   oldmac tasks        # migration checklist   (full command list: oldmac guide)
 set -uo pipefail
 COORD_DIR="${OLDMAC_COORD_DIR:-$HOME/mac-migration/coord}"
