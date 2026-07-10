@@ -140,15 +140,8 @@
                      [:##spacebar :!Cleft_arrow :!terminals]
                      [:##return_or_enter :!Cright_arrow :!terminals]
 
-                     ; ctrl / alt + arrow
-                     [{:sim [:j :i] :modi {:optional [:any]}} :!Tleft_arrow :terminals]
-                     [{:sim [:j :k] :modi {:optional [:any]}} :!Tleft_arrow :terminals]
-                     [{:sim [:j :i] :modi {:optional [:any]}} :!Oleft_arrow :!terminals]
-                     [{:sim [:j :k] :modi {:optional [:any]}} :!Oleft_arrow :!terminals]
-                     [{:sim [:l :i] :modi {:optional [:any]}} :!Tright_arrow :terminals]
-                     [{:sim [:l :k] :modi {:optional [:any]}} :!Tright_arrow :terminals]
-                     [{:sim [:l :i] :modi {:optional [:any]}} :!Oright_arrow :!terminals]
-                     [{:sim [:l :k] :modi {:optional [:any]}} :!Oright_arrow :!terminals]
+                     ; ctrl / alt + arrow: word-nav lives on h / semicolon (below).
+                     ; Diagonal :sim rules removed so i/j/k/l chord as true arrows.
 
                      ; arrows
                      [:##j :left_arrow]
