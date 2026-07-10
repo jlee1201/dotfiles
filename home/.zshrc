@@ -188,3 +188,20 @@ edge-open() {
 
 # Remove gam alias from oh-my-zsh git plugin (conflicts with GAM - Google Admin Manager)
 unalias gam 2>/dev/null
+
+# Turn off Caps Lock from the terminal (no built-in macOS CLI exists for this).
+# Calls a tiny compiled IOKit helper by absolute path so it works regardless of
+# $PATH. Source is tracked at dotfiles/scripts/capslock-off.c and is rebuilt
+# automatically if the binary is missing (e.g. on a freshly migrated Mac).
+capslock-off() {
+    local bin="$HOME/.local/bin/capslock-off"
+    local src="$HOME/workspace/personal/dotfiles/scripts/capslock-off.c"
+    if [[ ! -x "$bin" && -f "$src" ]]; then
+        echo "capslock-off: building helper..." >&2
+        clang "$src" -o "$bin" -framework IOKit -framework CoreFoundation || {
+            echo "capslock-off: build failed" >&2
+            return 1
+        }
+    fi
+    "$bin" "$@"
+}
