@@ -5,7 +5,8 @@ node = "22.14.0"
 uv = "latest"
 gcloud = "latest"
 gam = "latest"
-go = "latest"
+go = "1.26.3"
+terraform = "1.9.8"
 
 [settings]
 # should we just add all of the supported ones?
@@ -21,3 +22,4 @@ trusted_config_paths = [
 # https://github.com/Gusto/config_files/blob/88019060433bae4b075b098fc4770f191f2ce20d/init.sh#L56-L57
 # I'm not sure exactly how the tools.node.corepack = true would work
 not_found_auto_install = false
+auto_install = true

@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 # oldmac -- coordinate with / message the OLD Mac from ANY workspace and ANY agent.
-# Thin, agent-neutral launcher over the durable git-synced mailbox in ~/mac-migration/coord.
-# Works from any directory. Engine: coord.sh (+ _coord.py). Transport: git (primary) + LAN SSH.
+# Thin, agent-neutral launcher over the durable encrypted mailbox in ~/mac-migration/coord.
+# Works from any directory. Engine: coord.sh (+ _coord.py).
+# Transport: OCI VM (age-encrypted, DEFAULT since 2026-06-09) + git/LAN (presence beacons + ciphertext backup).
 #   oldmac              # show the guide (great for first discovery)
 #   oldmac inbox        # open items addressed to this Mac
 #   oldmac send old question "ask the old Mac something"
-#   oldmac presence     # is each Mac attending the channel now? (ALIVE/STALE)
+#   oldmac presence     # is each Mac attending the channel now? (ALIVE/STALE; git beacon)
+#   oldmac presence-oci # OCI-native: is the OTHER Mac's encrypted listener attached to the broker VM?
 #   oldmac listen [sec] # live listener: [NEW FROM OLD] / [SSH-UP|DOWN] / [OLD ALIVE|STALE]
 #   oldmac tasks        # migration checklist   (full command list: oldmac guide)
 set -uo pipefail

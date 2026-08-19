@@ -1,3 +1,84 @@
 {
-  "model": "sonnet"
+  "cleanupPeriodDays": 3650,
+  "env": {
+    "GUSTO_CLAUDE_SETUP": "true",
+    "ENABLE_CLAUDEAI_MCP_SERVERS": "false"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(echo *)",
+      "Bash(jq *)",
+      "Bash(bats *)",
+      "Bash(grep *)",
+      "Bash(mkdir *)",
+      "Bash(git *)",
+      "Bash(jj *)",
+      "Bash(ruby -c *)",
+      "Bash(bundle exec rspec *)",
+      "Bash(bin/srb *)",
+      "Bash(bin/rubocop *)",
+      "Bash(bin/rspec *)",
+      "Bash(cargo build *)",
+      "Bash(cargo test *)",
+      "Bash(cargo check *)",
+      "Bash(cargo clippy *)",
+      "Bash(cargo fmt *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr list *)",
+      "Bash(bktide *)",
+      "Bash(tmux *)",
+      "Bash(mise ls *)",
+      "Bash(mise ls-remote *)"
+    ],
+    "ask": [],
+    "defaultMode": "bypassPermissions"
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); if printf '%s' \"$input\" | grep -q '\"agent_type\"'; then exit 0; fi; if [ -f /tmp/claude-poll-silent ]; then rm -f /tmp/claude-poll-silent; exit 0; fi; afplay /System/Library/Sounds/Glass.aiff & osascript -e 'display notification \"Claude is waiting for your input\" with title \"Claude Code\"'",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "npx -y @owloops/claude-powerline@latest --style=powerline"
+  },
+  "enabledPlugins": {
+    "gusto-essentials@gusto-claude-code": true,
+    "gusto-dev@gusto-claude-code": true,
+    "gusto-frontend@gusto-claude-code": true,
+    "gusto-backend@gusto-claude-code": true,
+    "gusto-product@gusto-claude-code": true,
+    "superpowers@claude-plugins-official": true,
+    "gusto-eng-pes@gusto-claude-code": true,
+    "fakechat@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "gusto-gists": {
+      "source": {
+        "source": "github",
+        "repo": "gusto/gists"
+      }
+    }
+  },
+  "outputStyle": "Scannable",
+  "advisorModel": "opus",
+  "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
+  "theme": "dark-daltonized",
+  "preferredNotifChannel": "terminal_bell",
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true
 }
