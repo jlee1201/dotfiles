@@ -38,9 +38,15 @@
 - Default: `ardiustech/mithrin`
 - **Security Note**: Contains a GitHub token - be careful with this script
 
+**Powerlevel10k prompt testing**: `./scripts/test-p10k-prompt.sh ['cmd1' 'cmd2' ...]`
+- Sources `~/.p10k.zsh` in a real `tmux` session, runs the given commands (or a sensible default sequence), and prints the cursor-accurate rendered layout plus a scan for stray Nerd Font icons
+- Use this instead of screenshotting a real terminal when iterating on `home/.p10k.zsh` - see `.cursor/troubleshooting.mdc` ("Powerlevel10k Custom Timing Prompt") for why plain escape-stripped captures are unreliable for this
+- `--delay N` to adjust the pause after each command (default 3s)
+
 ## Workflow Commands
 
 **Testing changes**:
 1. After making changes, run `./scripts/create_symlinks.sh` to update symlinks
 2. For Karabiner changes, run `goku` and reload Karabiner-Elements
 3. For Hammerspoon changes, reload Hammerspoon (auto-reload is configured)
+4. For Powerlevel10k changes, run `./scripts/test-p10k-prompt.sh` before screenshotting a real terminal

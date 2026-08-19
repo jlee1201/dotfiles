@@ -32,6 +32,10 @@
 
   # The list of segments shown on the left. Fill it with the most important segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
+    # ==================[ Line #0 - see bottom of file ]==================
+    last_cmd_range          # start -> finish (or just date+time if <1s) of the last command
+    newline                 # \n
+    newline                 # blank spacer - separates last_cmd_range from the box below
     # =========================[ Line #1 ]=========================
     os_icon                 # os identifier
     dir                     # current directory
@@ -46,6 +50,9 @@
   # automatically hidden when the input line reaches it. Right prompt above the
   # last prompt line gets hidden if it would overlap with left prompt.
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
+    # ====[ Lines #0-1 - nothing on the right for last_cmd_range or the blank spacer ]====
+    newline                 # \n
+    newline                 # \n
     # =========================[ Line #1 ]=========================
     status                  # exit code of the last command
     command_execution_time  # duration of the last command
@@ -137,7 +144,13 @@
   # Connect left prompt lines with these symbols. You'll probably want to use the same color
   # as POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_FOREGROUND below.
   typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX='%240F╭─'
-  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_PREFIX='%240F├─'
+  # This prompt only ever has one "middle" (non-first, non-last) line - the dir/git line,
+  # since last_cmd_range's frame is always hidden (see bottom of file) so it never visually
+  # reads as connected to anything below it. That means the dir/git line is effectively
+  # always the first VISIBLE line of the box, so it should use the same glyph as an actual
+  # first line ('╭─'), not the '├─' middle-connector that implies continuing from something
+  # above it that isn't there.
+  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_PREFIX='%240F╭─'
   typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX='%240F╰─'
   # Connect right prompt lines with these symbols.
   typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX=
@@ -209,6 +222,25 @@
   typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=
   # No surrounding whitespace.
   typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_{LEFT,RIGHT}_WHITESPACE=
+
+  # Same idea for exectime (the "> " collapsed-row marker, see bottom of file): without this,
+  # it inherits POWERLEVEL9K_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL ('░▒▓') as a leading
+  # decoration whenever it's the first segment on its line, pushing "> command" further right
+  # than intended. Belongs here (inside this function), not at the bottom with the rest of
+  # the exectime customization - this whole block gets unset+rebuilt by `p10k reload`, and a
+  # bottom-of-file assignment wouldn't survive that.
+  typeset -g POWERLEVEL9K_EXECTIME_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=
+  typeset -g POWERLEVEL9K_EXECTIME_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=
+
+  # Same for last_cmd_range (the timing chip, see bottom of file). Without this it's the
+  # "last left segment" on its own line (nothing else is configured after it there), so it
+  # inherits POWERLEVEL9K_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL ('', a Nerd Font
+  # right-pointing arrow) as a trailing cap - with left_frame always hidden on that line
+  # (bottom of file), there's nothing for that arrow to visually connect to, so it renders
+  # orphaned. Confirmed via raw byte inspection of a captured session (searched for
+  # \xee\x82\xb4 = U+E0B4 UTF-8), not guessed.
+  typeset -g POWERLEVEL9K_LAST_CMD_RANGE_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=
+  typeset -g POWERLEVEL9K_LAST_CMD_RANGE_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=
 
   ##################################[ dir: current directory ]##################################
   # Current directory background color.
@@ -1717,10 +1749,87 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 (( ${#p10k_config_opts} )) && setopt ${p10k_config_opts[@]}
 'builtin' 'unset' 'p10k_config_opts'
 
+# Printing extra lines from preexec (start/finish "chips") is CONFIRMED to corrupt p10k's own
+# redraw in a real terminal - a stray unstyled timestamp appears, reproducible every time.
+# Root cause: zle keeps its own internal bookkeeping of cursor position to redraw the active
+# input line efficiently (relative moves, not a full recompute). Any `print` outside zle's own
+# redraw path goes unnoticed by that bookkeeping, so the next time zle redraws using it (the
+# next command's own submit-time collapse), it moves to the wrong place. No amount of retiming
+# the print fixes this - it has to not print anything at all.
+#
+# Fix: two real p10k segments, both rendered entirely within p10k's own pipeline (so zle's
+# bookkeeping stays accurate - nothing is happening outside its view):
+#   - `exectime` (submit-time collapse of the row you just typed on, into "> command") is now
+#     just a plain "> " marker - no timestamp, since that data is never accurate for the row
+#     it collapses (it's evaluated before the command inline with it has run).
+#   - `last_cmd_range` (new, wired into LEFT_PROMPT_ELEMENTS above as its own top line) shows
+#     the range of whichever command just completed, rendered as part of p10k's normal
+#     per-precmd render - not an injected print, so it's safe. If the command took under 1s, a
+#     start/finish range isn't meaningful, so just the date+finish time is shown instead.
+zmodload zsh/datetime  # for $EPOCHREALTIME/$EPOCHSECONDS + the strftime builtin (no fork)
+typeset -g _p9k_cmd_start_epoch=''
+typeset -g _p9k_cmd_start_fmt=''
+typeset -g _p9k_last_cmd_date_fmt=''
+typeset -g _p9k_last_cmd_time_fmt=''
+autoload -Uz add-zsh-hook
+
+function _p9k_capture_cmd_start() {
+  _p9k_cmd_start_epoch=$EPOCHREALTIME
+  strftime -s _p9k_cmd_start_fmt '%H:%M:%S' $EPOCHSECONDS
+}
+add-zsh-hook preexec _p9k_capture_cmd_start
+
+function _p9k_format_duration() {
+  # $1 = whole seconds. Escalates the unit shown based on magnitude: "2s", "1m59s", "1h23m45s".
+  local -i total=$1 h m s
+  (( h = total / 3600, m = (total % 3600) / 60, s = total % 60 ))
+  if (( h > 0 )); then
+    print -rn -- "${h}h${m}m${s}s"
+  elif (( m > 0 )); then
+    print -rn -- "${m}m${s}s"
+  else
+    print -rn -- "${s}s"
+  fi
+}
+
+function _p9k_stash_cmd_range() {
+  # Skip when no command actually ran since the last prompt (session start, or hitting
+  # <Enter> on an empty line - neither fires preexec, so there's nothing to stash).
+  [[ -n $_p9k_cmd_start_fmt ]] || return
+  local finish_fmt
+  strftime -s finish_fmt '%H:%M:%S' $EPOCHSECONDS
+  strftime -s _p9k_last_cmd_date_fmt '%m/%d' $EPOCHSECONDS
+  # Round to nearest second (matches p10k's own command_execution_time convention -
+  # internal/p10k.zsh does `(( sec = P9K_COMMAND_DURATION_SECONDS + 0.5 ))`) rather than
+  # truncating, so this and the native segment never disagree on the same command's duration.
+  local -i elapsed=$(( EPOCHREALTIME - _p9k_cmd_start_epoch + 0.5 ))
+  if (( elapsed < 1 )); then
+    _p9k_last_cmd_time_fmt="${finish_fmt}"
+  else
+    _p9k_last_cmd_time_fmt="${_p9k_cmd_start_fmt} → ${finish_fmt} ($(_p9k_format_duration $elapsed))"
+  fi
+  _p9k_cmd_start_fmt=''
+  _p9k_cmd_start_epoch=''
+}
+# Must run BEFORE p10k's own precmd (which evaluates prompt_last_cmd_range), so prepend rather
+# than append - add-zsh-hook always appends, which here would read stale/empty variables.
+precmd_functions=(_p9k_stash_cmd_range ${precmd_functions:#_p9k_stash_cmd_range})
+
+prompt_last_cmd_range() {
+  [[ -n $_p9k_last_cmd_time_fmt ]] || return
+  # Call _p9k_get_icon directly rather than in a `$(...)` subshell - matches every other call
+  # site in p10k's own source (e.g. prompt_date/prompt_time), avoids an unnecessary fork, and
+  # avoids `$(...)` silently stripping a trailing space some icon glyphs carry for spacing.
+  _p9k_get_icon '' DATE_ICON; local date_icon=$_p9k__ret
+  _p9k_get_icon '' TIME_ICON; local time_icon=$_p9k__ret
+  p10k segment -f 252 -b 237 -t "${date_icon} ${_p9k_last_cmd_date_fmt} ${time_icon} ${_p9k_last_cmd_time_fmt}"
+}
+
 prompt_exectime() {
-    local date_icon="$(_p9k_get_icon '' DATE_ICON && echo "$_p9k__ret")"
-    local time_icon="$(_p9k_get_icon '' TIME_ICON && echo "$_p9k__ret")"
-    p10k segment -f 252 -b 237 -t "$(date +"${date_icon}"' %m/%d '"${time_icon}"' %H:%M:%S')"
+    # No trailing space in the text - p10k already adds its own gap after segment content,
+    # and the leftover reserved column width from the (hidden) left_frame was stacking with
+    # it, pushing the marker further right than intended.
+    p10k segment -f 240 -t "❯"
 }
 
 # Config to use the segment with customized transient prompt
@@ -1728,9 +1837,31 @@ typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=off
 POWERLEVEL9K_LEFT_PROMPT_ELEMENTS+=(exectime)
 
 function p10k-on-pre-prompt() {
-    p10k display '1'=show '2/left/exectime'=hide '2/left_frame'=show
+    # p10k's line numbers are 1-based from the top. Negative indices (counting from the
+    # bottom) exist too, but `-2` gets misparsed as an option flag by p10k's arg parser
+    # (dumps usage help instead of applying), so stick with positive/absolute here.
+    # NOTE: if lines are added/removed in LEFT_PROMPT_ELEMENTS, these numbers need updating -
+    # verify with `p10k display -a '*'` from a real interactive shell, rather than assuming;
+    # this exact drift has silently broken these toggles more than once already.
+    #
+    # Current layout: 1 = last_cmd_range, 2 = blank spacer, 3 = dir/git, 4 = input (exectime).
+    # RIGHT_PROMPT_ELEMENTS got a matching blank inserted (see its own comment) so its
+    # status/time content stays paired with line 3, not line 1 or 2.
+    #
+    # 1/left_frame is always hidden - last_cmd_range should read as a standalone line, not
+    # as the top of the same connected box as the dir/git + input lines below it.
+    #
+    # 2/left_frame and 2/right_frame are always hidden too - it's a genuinely blank spacer
+    # line, not a real segment of the framed box.
+    # 1/right_frame is also always hidden: last_cmd_range has no actual right-side content
+    # (RIGHT_PROMPT_ELEMENTS' segments pair with the dir/git line, not this one - see the
+    # note above about the reverted 4th-line attempt), so with right_frame left at its
+    # default "show" the right-side cap glyph () renders orphaned - a small Nerd Font
+    # arrow with nothing to visually pair it with, that renders as tofu/missing-glyph boxes
+    # in fonts without that icon and is invisible in others.
+    p10k display '1/left_frame'=hide '1/right_frame'=hide '1/gap'=hide '2/left_frame'=hide '2/right_frame'=hide '3'=show '4/left/exectime'=hide '4/left_frame'=show
 }
 function p10k-on-post-prompt() {
-    p10k display '1'=hide '2/left/exectime'=show '2/left_frame'=hide
+    p10k display '1/left_frame'=hide '1/right_frame'=hide '1/gap'=hide '2/left_frame'=hide '2/right_frame'=hide '3'=hide '4/left/exectime'=show '4/left_frame'=hide
     # echo ""
 }

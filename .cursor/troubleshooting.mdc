@@ -37,6 +37,31 @@ Enable `fn + s + trackpad drag` for smooth scrolling with modifier key support (
 
 ## Common Issues
 
+### Powerlevel10k Custom Timing Prompt (SOLVED - 2026-08-18)
+
+#### Problem
+Show accurate start/finish/duration of the previous command in the prompt (`home/.p10k.zsh`), without corrupting the terminal, misattributing timing to the wrong command, or showing stale data.
+
+#### Solution ✅
+`last_cmd_range` is a real Powerlevel10k segment (its own top line in `POWERLEVEL9K_LEFT_PROMPT_ELEMENTS`), not a raw `print`. It reads pre-stashed `_p9k_last_cmd_*` globals set by `preexec`/`precmd` hooks and renders via `p10k segment`, entirely inside p10k's own rendering pipeline. Use `scripts/test-p10k-prompt.sh` to verify any future change instead of eyeballing a real terminal screenshot.
+
+#### Critical Rule: Never `print` Outside p10k's Own Render Cycle
+Any raw `print`/`echo` from `preexec`, or from the custom `p10k-on-post-prompt` hook, corrupts zle's internal cursor bookkeeping on the *next* prompt redraw (a stray, unstyled line appears, reproducible every time in a real terminal - **not** reproducible in a scripted `expect`/`script` pty, which lacks the terminal-side behaviors that trigger it). If you need to show computed data, add it as a real `p10k segment` inside `LEFT`/`RIGHT_PROMPT_ELEMENTS`, never as a bare `print`. Full story in Architecture Decisions below.
+
+#### Verify With p10k's Own Introspection, Not Guesses
+- `p10k display -a '*'` (real interactive shell, after ≥1 precmd cycle - errors if run non-interactively) dumps the true show/hide state of every named "part". `p10k display 'N'=...` line numbers are 1-based from the top of the *combined* prompt and drift silently every time a `newline` is added/removed to either `LEFT_PROMPT_ELEMENTS` or `RIGHT_PROMPT_ELEMENTS` - this broke our toggles 3+ times before we started checking with this command instead of counting by hand.
+- Negative line indices (`-2`) are documented but get misparsed as an option flag by p10k's arg parser (dumps usage help instead of applying) - use positive indices, or prefix with `--` to force positional parsing (untested here).
+- LEFT/RIGHT `_PROMPT_ELEMENTS` line counts must stay in sync manually - insert a blank line in one, insert a matching `newline` in the other, then re-run `p10k display -a '*' | grep /right/` to confirm right-side content landed where expected. (p10k has a built-in auto-align, `POWERLEVEL9K_RPROMPT_ON_NEWLINE` - not yet tried here, may remove the need for manual counting.)
+- To see what a change actually looks like, use `scripts/test-p10k-prompt.sh` (`tmux capture-pane -p`, plain, no `-e`) - it correctly resolves cursor movements into the final rendered layout. Piping `expect`/`script` output through a strip-ANSI filter does **not** - it reads escape-sequence bytes linearly, which is misleading for anything using cursor-based redraws (exactly what p10k's `zle-line-finish` collapse trick does). It's fine for confirming *absence* of unexpected text, just not for layout/indentation questions.
+- To confirm/deny a suspected stray icon, `scripts/test-p10k-prompt.sh` also greps a `-e` capture's raw bytes for the Nerd Font Private-Use-Area range (`U+E000`-`U+F8FF`). Font-dependent rendering (tofu boxes in one terminal, a small glyph in another) is the signature of a PUA icon, not a terminal bug - found this way, not by guessing from a screenshot.
+- **Instant Prompt caches and replays segment output across sessions** (`~/.cache/p10k-instant-prompt-<user>.zsh`) - a segment showing session-specific "just happened" state (like `last_cmd_range`) can show a stale value from a *different, unrelated* shell session on every new tab, until that session's own first command corrects it. Confirmed by clearing the cache file and watching a fresh shell render correctly. Not yet fixed - native segments guard against this with the `$__p9k_instant_prompt_active` flag (see `prompt_time`/`prompt_date` in the vendored plugin); any new session-specific segment needs the same guard.
+
+#### Custom Segment Symbol Inheritance
+Any custom `prompt_<name>` segment inherits `POWERLEVEL9K_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL` (`░▒▓`) and `POWERLEVEL9K_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL` (a Nerd Font arrow) whenever it's the first/last segment on its line - same as any built-in segment. `prompt_char` already blanks both (see `POWERLEVEL9K_PROMPT_CHAR_LEFT_PROMPT_{FIRST_SEGMENT_START,LAST_SEGMENT_END}_SYMBOL=`, inside the config function so it survives `p10k reload`). **Any new custom segment on its own line needs the same `POWERLEVEL9K_<SEGMENT>_LEFT_PROMPT_{FIRST_SEGMENT_START,LAST_SEGMENT_END}_SYMBOL=` pair** or it inherits stray decoration (indentation from the start symbol, an orphaned arrow from the end symbol) - rediscovered twice in one session before this was written down.
+
+#### Prefer zsh Builtins Over Forking `date`
+This code runs on every `preexec`/`precmd`, i.e. every single interactive command. Use `strftime -s var '%FMT' $EPOCHSECONDS` (from `zmodload zsh/datetime`, already loaded for `$EPOCHREALTIME`) instead of `` $(date +...) `` - no fork. Likewise call `_p9k_get_icon '' ICON_NAME; local x=$_p9k__ret` directly rather than wrapping it in `$(...)` - matches every internal p10k call site, avoids a fork, and avoids `$(...)` silently stripping a trailing space some icon glyphs carry for spacing.
+
 ### Karabiner Changes Not Working
 1. **Problem**: Configuration changes not taking effect
 2. **Solution**: Run `goku` to compile `.edn` → `.json`, then reload Karabiner-Elements

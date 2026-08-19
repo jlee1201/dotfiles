@@ -1,5 +1,39 @@
 # Architecture Decisions & Key Learnings
 
+## Powerlevel10k Custom Timing Prompt
+
+### Decision: Real Segments, Not Raw `print`, for Command Timing
+
+**Context**: Wanted accurate start/finish/duration of each command shown in the prompt (`home/.p10k.zsh`).
+
+**Options Evaluated**:
+1. Print a "chip" via `preexec`/`precmd` hooks, timed to appear right after/before a command.
+2. Render timing as a genuine p10k segment inside `LEFT_PROMPT_ELEMENTS`.
+
+**Decision**: Chose (2), after (1) was proven to corrupt the terminal.
+
+**Rationale**:
+- This file's pre-existing `p10k-on-pre-prompt`/`p10k-on-post-prompt` hack collapses a just-submitted prompt row into a minimal `❯ command` marker using zle's own in-place redraw (`zle .reset-prompt`), which only works because it stays entirely inside zle's own redraw path.
+- A `print` from `preexec` (or even from `p10k-on-post-prompt` itself - tried and reverted, lands text INLINE on the command instead of its own line, since it fires before zle echoes the line-ending newline) happens outside that path. zle's cursor bookkeeping goes stale, and the next collapse redraws over the wrong lines. Confirmed reproducible every time in a real terminal, not reproducible in a scripted pty (no real terminal answering geometry queries).
+- A real `p10k segment` renders inside p10k's own per-precmd computation, which is what the collapse mechanism is designed to redraw safely.
+
+### Failed Approaches & Learnings
+1. **Print immediately in the command's own `precmd`** - safe (doesn't corrupt), but visually redundant with the live prompt's own time chip for that instant.
+2. **Defer the print to the next command's `preexec`** - the actual corruption trigger.
+3. **Move the print into `p10k-on-post-prompt`** (fires earlier, before p10k's own post-submit reset) - worse: text lands inline on the typed command instead of its own line.
+4. **Embed `$'\n'` inside a `p10k segment -t "..."` string** to add a blank line without a new array line - silently blanks the segment (p10k assumes single-line content).
+5. **Negative `p10k display` line indices** (`-2`, meant to be robust to future line insertions) - misparsed as an option flag, dumps usage help instead of applying.
+6. **Adding a blank `LEFT_PROMPT_ELEMENTS` line without a matching `RIGHT_PROMPT_ELEMENTS` line** - desyncs which physical row RIGHT's segments (status, execution time, clock) attach to. Fixed by adding a matching `newline` to RIGHT and re-verifying with `p10k display -a '*' | grep /right/`.
+7. **Manually tracking command duration** (own `EPOCHREALTIME` diff, own escalating-unit formatter) instead of reading p10k's own `$P9K_COMMAND_DURATION_SECONDS` (already computed every precmd) - duplicated logic p10k already provides, and truncated instead of rounding half-up like p10k's own `command_execution_time` segment, so the two could disagree on the same command's duration until the rounding was fixed to match. Not fully consolidated - `last_cmd_range` still tracks its own start epoch (needed for the "start →" display, which `$P9K_COMMAND_DURATION_SECONDS` alone can't provide), and duration is still shown in two places. Worth revisiting whether `last_cmd_range`'s duration parenthetical should exist at all, given the native segment already covers ≥3s commands.
+
+### Technical Patterns Established
+- **Ground truth over guessing**: `p10k display -a '*'` from a real interactive shell is authoritative for line numbers and part visibility. Guessing from documentation or prior behavior cost multiple redo cycles in this session.
+- **`tmux capture-pane -p` for layout verification** (wrapped in `scripts/test-p10k-prompt.sh`): correctly resolves cursor-based redraws into final visual state; `expect`/`script` + strip-ANSI does not.
+- **Byte-level PUA search for stray icons** (also in `scripts/test-p10k-prompt.sh`): scan a `-e` (escape-preserving) tmux capture for `U+E000`-`U+F8FF` UTF-8 sequences, rather than guessing from a screenshot description.
+- **Symbol overrides live inside the config function, not the bottom-of-file custom section**: anything using `POWERLEVEL9K_<X>_...` must be set inside the wizard-generated `() { ... }` block (which starts with `unset -m 'POWERLEVEL9K_*'`), or it's wiped on `p10k reload`.
+- **Instant Prompt caches segment *output*, not just config** (`~/.cache/p10k-instant-prompt-<user>.zsh`): a segment whose content is inherently session-specific (not stable across shells, like "the last thing that happened") will replay stale data from a different session on every new tab. Native time-sensitive segments guard this with `$__p9k_instant_prompt_active`; a custom segment needs the same treatment or it's a known, currently-unfixed cosmetic bug (self-corrects on that session's first command).
+- **Hardcoded `p10k display` line numbers are fragile and keep drifting**: no mechanism ties them to the actual element-array line count, and this broke silently 3+ times in one session. `p10k display -a '*'` verification catches it after the fact; nothing catches it before. `*/left/<segment>`-style glob addressing (matches by name regardless of line position) is more robust for a segment that's always appended last, like `exectime` - not yet applied.
+
 ## Scrolling System Architecture
 
 ### Decision: Hammerspoon over Karabiner-Elements for Scrolling
