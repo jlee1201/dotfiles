@@ -13,3 +13,5 @@ home/.claude.json
 !home/.claude/CLAUDE.md
 !home/.claude/mcp.json
 !home/.claude/settings.json
+!home/.claude/skills/
+!home/.claude/skills/**
