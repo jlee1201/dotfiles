@@ -6,46 +6,86 @@
   },
   "permissions": {
     "allow": [
-      "Bash(ls *)",
-      "Bash(cat *)",
-      "Bash(head *)",
-      "Bash(tail *)",
-      "Bash(echo *)",
-      "Bash(jq *)",
+      "Bash(/Users/john.lee/workspace/eng_ai_assistant/scripts/prune-session-worktrees.sh *)",
+      "Bash(/Users/john.lee/workspace/eng_ai_assistant/scripts/prune-submodule-worktrees.sh *)",
       "Bash(bats *)",
-      "Bash(grep *)",
-      "Bash(mkdir *)",
-      "Bash(git *)",
-      "Bash(jj *)",
-      "Bash(ruby -c *)",
-      "Bash(bundle exec rspec *)",
-      "Bash(bin/srb *)",
-      "Bash(bin/rubocop *)",
       "Bash(bin/rspec *)",
+      "Bash(bin/rubocop *)",
+      "Bash(bin/srb *)",
+      "Bash(bktide *)",
+      "Bash(bundle exec rspec *)",
       "Bash(cargo build *)",
-      "Bash(cargo test *)",
       "Bash(cargo check *)",
       "Bash(cargo clippy *)",
       "Bash(cargo fmt *)",
-      "Bash(gh pr view *)",
+      "Bash(cargo test *)",
+      "Bash(cat *)",
+      "Bash(echo *)",
       "Bash(gh pr diff *)",
       "Bash(gh pr list *)",
-      "Bash(bktide *)",
-      "Bash(tmux *)",
+      "Bash(gh pr view *)",
+      "Bash(git *)",
+      "Bash(grep *)",
+      "Bash(head *)",
+      "Bash(jj *)",
+      "Bash(jq *)",
+      "Bash(ls *)",
       "Bash(mise ls *)",
-      "Bash(mise ls-remote *)"
+      "Bash(mise ls-remote *)",
+      "Bash(mkdir *)",
+      "Bash(ruby -c *)",
+      "Bash(scripts/prune-session-worktrees.sh *)",
+      "Bash(scripts/prune-submodule-worktrees.sh *)",
+      "Bash(tail *)",
+      "Bash(tmux *)"
     ],
     "ask": [],
-    "defaultMode": "bypassPermissions"
+    "defaultMode": "auto"
   },
+  "disabledMcpjsonServers": [
+    "figma"
+  ],
   "hooks": {
     "Stop": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "input=$(cat); if printf '%s' \"$input\" | grep -q '\"agent_type\"'; then exit 0; fi; if [ -f /tmp/claude-poll-silent ]; then rm -f /tmp/claude-poll-silent; exit 0; fi; afplay /System/Library/Sounds/Glass.aiff & osascript -e 'display notification \"Claude is waiting for your input\" with title \"Claude Code\"'",
+            "command": "input=$(cat); if [ \"${CLAUDE_CODE_SESSION_ATTENDED:-1}\" = \"0\" ]; then exit 0; fi; if printf '%s' \"$input\" | grep -q '\"agent_type\"'; then exit 0; fi; if [ -f /tmp/claude-poll-silent ]; then rm -f /tmp/claude-poll-silent; exit 0; fi; afplay -v 0.1 /System/Library/Sounds/Glass.aiff",
             "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/local/lib/runlayer/aiwatch/aiwatch-hook hook --client claude_code"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/local/lib/runlayer/aiwatch/aiwatch-hook hook --client claude_code"
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/local/lib/runlayer/aiwatch/aiwatch-hook hook --client claude_code"
           }
         ]
       }
@@ -63,7 +103,8 @@
     "gusto-product@gusto-claude-code": true,
     "superpowers@claude-plugins-official": true,
     "gusto-eng-pes@gusto-claude-code": true,
-    "fakechat@claude-plugins-official": true
+    "fakechat@claude-plugins-official": false,
+    "devloop@gusto-gists": false
   },
   "extraKnownMarketplaces": {
     "gusto-gists": {
@@ -74,11 +115,18 @@
     }
   },
   "outputStyle": "Scannable",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "autoCompactWindow": "auto"
+    }
+  },
+  "autoCompactWindow": 200000,
   "advisorModel": "opus",
-  "skipDangerousModePermissionPrompt": true,
+  "showThinkingSummaries": true,
   "skipWorkflowUsageWarning": true,
   "theme": "dark-daltonized",
   "preferredNotifChannel": "terminal_bell",
   "remoteControlAtStartup": true,
-  "agentPushNotifEnabled": true
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": false
 }

@@ -1,6 +1,6 @@
 [tools]
 # give some default global versions
-ruby = "3.3.5"
+ruby = "3.4.9"
 node = "22.14.0"
 uv = "latest"
 gcloud = "latest"
@@ -9,9 +9,6 @@ go = "1.26.3"
 terraform = "1.9.8"
 
 [settings]
-# should we just add all of the supported ones?
-# https://mise.jdx.dev/configuration.html#idiomatic-version-files
-idiomatic_version_file_enable_tools = ["ruby", "node"]
 
 # so we don't have to run `mise trust` as part of bin/setup
 trusted_config_paths = [

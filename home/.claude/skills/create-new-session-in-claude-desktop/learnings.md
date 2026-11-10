@@ -1001,3 +1001,16 @@ in-memory still at `eng_ai_assistant`). Reset both fields on disk to match where
 work actually lives (the worktree) before moving on — an inconsistent patch nobody will
 remember the provenance of a week from now is exactly the kind of landmine this file
 exists to prevent.
+
+## 2026-09-29: long prompt pasted but never submitted, child idle 4h
+`launch-child-session.sh` sent a ~2.4KB multi-line prompt; the REPL collapsed it into `[Pasted text #1 +4 lines][Pasted text #2 +4 lines]` and the trailing Enter never landed, so the child sat at the prompt with **0 tokens** until `watch-child-turn.sh` hit its 4h "still running" message. A manual `tmux send-keys -t <name> Enter` submitted it. Probably the Enter arrived while the paste was still being processed. **Check after launch:** if the transcript JSONL has no `assistant` entry ~30s after `launched`, send Enter again. Durable fix, not yet made: have the launch script poll for the first assistant/user turn and re-send Enter once.
+
+## (2026-09-29) Long prompts via send-keys arrive truncated — only the tail survives
+
+Both `launch-child-session.sh` (multi-line, ~2.3K chars) and `send-turn.sh` (single-line,
+~1.4K chars) delivered only the last ~250-340 chars to the child (verified in the child's
+transcript `type:user` content). The child did only the last-mentioned task each time and
+said "your message arrived cut off". Workaround that worked: write the instructions to a
+file and send a one-line "Read and follow <path>" prompt. Also: dimmed (`\e[2m`) text on the
+child's `❯` line is CC's ghost prompt-suggestion, not user input — check with
+`tmux capture-pane -e` before assuming the human typed something.
